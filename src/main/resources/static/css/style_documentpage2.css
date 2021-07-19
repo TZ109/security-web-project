@@ -1,0 +1,64 @@
+#remote_1{
+	text-align: center;
+	position:absolute;
+	top: 120px;
+	left: 1260px;
+	width: 300px;
+	height: 400px;
+	background: #FFFFFF 0% 0% no-repeat padding-box;
+	box-shadow: 0px 3px 6px #00000029;
+	border-radius: 30px;
+	opacity: 0.9;
+}
+
+#remote_2{
+	text-align: center;
+	position:absolute;
+	top: 120px;
+	left: 27px;
+	width: 300px;
+	height: 950px;
+	background: #FFFFFF 0% 0% no-repeat padding-box;
+	box-shadow: 0px 3px 6px #00000029;
+	border-radius: 30px;
+	opacity: 0.9;
+}
+
+#controller_background_gray{
+	position:absolute;
+	z-index:10;
+	top:0;
+	left:45vw;
+	transform: translate(-50%, 9.5%);
+	width: 1580px;
+	height: 1382px;
+	box-shadow: 5px 3px 6px #00000066;
+	border-radius: 30px;
+	opacity: 1;
+	background: #E8EAEF 0% 0% no-repeat padding-box;
+}
+
+#title_background{
+	position:absolute;
+	text-align: center;
+	top: 30px;
+	left: 340px;
+	width: 906px;
+	height: 78px;
+	background: #FFFFFF 0% 0% no-repeat padding-box;
+	box-shadow: 0px 3px 6px #00000029;
+	border-radius: 30px;
+}
+
+#controller_background_white{
+	position:absolute;
+	top: 120px;
+	left: 340px;
+	width: 906px;
+	height: 1231px;
+	background: #FFFFFF 0% 0% no-repeat padding-box;
+	box-shadow: 0px 3px 6px #00000029;
+	border-radius: 30px;
+}
+
+

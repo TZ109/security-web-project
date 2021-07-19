@@ -1,0 +1,35 @@
+.cus_title{
+    position: absolute;
+    text-align: left;
+    
+    letter-spacing: -0.45px;
+    color: #7E7E7E;
+    opacity: 1;
+}
+.cus_title p{
+    font: normal normal normal 18px/24px Noto Sans KR;
+}
+
+.cus_body{
+    position: absolute;
+    text-align: left;
+    
+    letter-spacing: -0.4px;
+    color: #191919;
+    opacity: 1;
+}
+.cus_body p{
+    font: normal normal normal 16px/24px Noto Sans KR;
+}
+
+.numbering{
+    margin-right: 30px;
+}
+.numbering p{
+    text-align: left;
+    font: normal normal medium 18px/24px Noto Sans KR;
+    letter-spacing: -0.45px;
+    color: #191919;
+    opacity: 1; 
+
+}

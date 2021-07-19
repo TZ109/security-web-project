@@ -1,0 +1,65 @@
+input:focus {outline:none;}
+
+.btn{
+outline:none;
+text-align: center;
+font: normal normal normal 14pt/16pt Noto Sans CJK KR;
+letter-spacing: -0.3px;
+color: #245ae3;
+border: 1px solid #245ae3;
+margin-left: 10px;
+margin-top : 3px;
+padding-top:10px;
+padding-bottom:10px;
+padding-left: 13.5px;
+padding-right: 13.5px;
+background: #FFFFFF 0% 0% no-repeat padding-box;
+border-radius: 50px;
+cursor: pointer;
+margin: 2px;
+}
+
+.btn2{
+outline:none;
+text-align: center;
+font: normal normal normal 14pt/16pt Noto Sans CJK KR;
+letter-spacing: -0.3px;
+color: #FFFFFF;
+border: 4px;
+padding-top:20px;
+padding-bottom:20px;
+padding-left: 50px;
+padding-right: 50px;
+background: #245ae3 0% 0% no-repeat padding-box;
+border-radius: 50px;
+cursor: pointer;
+margin: 2px;
+  }
+
+.sign_up_input{
+  font: normal normal bold 16px/15px Noto Sans KR;
+  text-align:left;border: 1px
+  solid #505050;
+  border-radius: 50px;
+  opacity: 1;
+  border-bottom-color: rgba(80, 80, 80, 1);
+  background-position: center;
+  padding-top:0px;
+  box-sizing: border-box;
+  background-image:url(/img/회원가입박스.svg);
+  background-size:cover;
+  padding-bottom:5px;
+  padding-left: 30px;
+  padding-right: 20px;
+  border-bottom-style: solid;
+  border-bottom-width: 1.00px;
+  border-left-color: rgba(80, 80, 80, 1);
+  border-left-style: solid;
+  border-left-width: 1.00px;
+  border-right-color: rgba(80, 80, 80, 1);
+  border-right-style: solid;
+  border-right-width: 1.00px;
+  border-top-color: rgba(80, 80, 80, 1);
+  border-top-style: solid;
+  border-top-width: 1.00px;
+}

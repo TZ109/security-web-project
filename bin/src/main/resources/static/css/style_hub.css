@@ -1,0 +1,14 @@
+#background_gray{
+	position:absolute;
+	top:10%;
+	left:50vw;
+	transform: translate(-50%, 0%);
+	width: 1280px;
+	text-align:center;
+	height: 65vh;
+	box-shadow: 5px 3px 6px #00000066;
+	border-radius: 50px;
+	opacity: 1;
+	background: #E8EAEF 0% 0% no-repeat padding-box;
+	padding:5%;
+}

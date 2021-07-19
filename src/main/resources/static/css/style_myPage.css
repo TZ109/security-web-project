@@ -1,0 +1,13 @@
+.my_page_data{
+    position: absolute;
+    font: normal normal normal 17px/23px Noto Sans KR;
+    letter-spacing: -0.42px;
+    color: #191919;
+}
+.my_page_bar{
+    position: absolute;
+    width: 1040px;
+    height:1px;
+    background-color: #245AE3;
+    
+}

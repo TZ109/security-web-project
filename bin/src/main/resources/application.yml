@@ -1,0 +1,52 @@
+
+server:
+  port: 8090
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+      
+spring:
+  freemarker:
+    checkTemplateLocation: false
+
+  
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/security?serverTimezone=Asia/Seoul
+    username: cos
+    password: cos1234
+
+ # profiles: dev  -jar class_name.jar
+          
+
+  jpa:
+    hibernate:
+      ddl-auto: update #create update none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    
+    
+  security:
+   oauth2:
+    client:
+     registration:
+      google:
+       client-id: 345072234027-njpbrsdptpf5m2de8arse8i404m6mt25.apps.googleusercontent.com
+       client-secret: LyieJiQmBZEmUA7jcMu_12pJ
+       scope:
+       - email
+       - profile
+       
+  mvc:
+    view:
+      prefix: /WEB-INF/servlet/views/
+      suffix: .jsp
+      static-path-pattern: /resources/** 
+      
+
+ 

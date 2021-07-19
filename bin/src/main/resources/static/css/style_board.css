@@ -1,0 +1,191 @@
+/*!
+ * Bootstrap v4.4.1 (https://getbootstrap.com/)
+ * Copyright 2011-2019 The Bootstrap Authors
+ * Copyright 2011-2019 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+  */
+h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem},
+
+sup{top:-.5em}a{color:#007bff;text-decoration:none;background-color:transparent}
+
+
+.table{width:60%;margin-bottom:1rem;color:#dee2e6}
+.table td{padding:.4rem;vertical-align:top;border-top:1px solid #dee2e6}
+.table th{padding:.4rem;vertical-align:top;border-top:2px solid #dee2e6}
+.col-lg-12{-ms-flex:0 0 100%;flex:0 0 100%;max-width:100%}
+
+
+html,
+body {
+	height: 100%;
+	font-family: "Mulish", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	background: #f9fafc;
+}
+
+.table-hover {
+	position: absolute;
+	top: 452px;
+	left: 320px;
+}
+
+.title {
+	position: absolute;
+	top: 143px;
+	left: 278px;
+	width: 150px;
+	height: 70px;
+	text-align: left;
+	font: normal normal bold 48px/64px Noto Sans KR;
+	letter-spacing: -1.2px;
+	color: #191919;
+	opacity: 1;
+}
+
+.sub_div {
+	position: absolute;
+	top: 350px;
+	left: 338px;
+}
+
+hr {
+	position: absolute;
+	top: 222px;
+	left: 270px;
+	width: 1000px;
+	height: 5px;
+
+	border: solid blue 1px;
+	background: blue 0% 0% no-repeat padding-box;
+	border-radius: 10px;
+	opacity: 1;
+}
+
+.category{
+	position: absolute;
+	top: 242px;
+	left: 270px;
+	width: 700px;
+	height: 26px;	
+	text-align: left;
+	font: normal normal normal 18px/24px Noto Sans KR;
+	letter-spacing: -0.45px;
+	color: #191919;
+	opacity: 1;
+}
+
+.category2{
+	position:relative;
+	width: 33px;
+	height: 26px;
+	text-align: left;
+	font: normal normal medium 18px/24px Noto Sans KR;
+	letter-spacing: -0.45px;
+	color: #191919;
+	opacity: 1;
+	padding-right: 6px;
+}
+
+.category2:hover{
+	font-weight:bold;
+	
+	  content: "";
+
+  transition: all 0.2s ease-in-out;
+  transition-duration: 0.3s;
+  background-color: #8fd3f4;
+	
+}
+
+b {
+	color:grey;
+	vertical-align:top;
+}
+
+a:hover,
+a:focus {
+	text-decoration: none;
+	outline: none;
+	color: #000000;
+}
+label {
+	color: #000;
+}
+
+
+.product__page__title .product__page__filter .nice-select .list {
+	margin-top: 0;
+	border-radius: 0;
+}
+
+.product__pagination {
+	text-align: center;
+	
+}
+
+.product__pagination a {
+	position: relative;
+	top: 661px;
+	left: 85px;
+	display: inline-block;
+	font-size: 15px;
+	color: #5d5d5d;
+	font-weight: 600;
+	height: 50px;
+	width: 50px;
+	border: 1px solid transparent;
+	border-radius: 50%;
+	line-height: 48px;
+	text-align: center;
+	-webkit-transition: all, 0.3s;
+	-o-transition: all, 0.3s;
+	transition: all, 0.3s;
+}
+
+.product__pagination a:hover {
+	color: #000000;
+}
+
+.product__pagination a.current-page {
+	border: 1px solid black;
+}
+
+.product__pagination a i {
+	color: #5d5d5d;
+	font-size: 15px;
+}
+
+#game td,th {
+	text-align: center;
+	padding-left: 10px;
+	padding-right: 10px;
+	color: black;
+}
+
+
+
+
+/* buttons */
+
+
+
+.site-btn {
+	cursor: pointer;
+	position: absolute;
+	top: 680px;
+	right: 320px;
+	font-size: 13px;
+	color: #ffffff;
+	background: #e53637;
+	font-weight: 700;
+	border: none;
+	border-radius: 2px;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	display: inline-block;
+	padding: 12px 30px;
+	margin-bottom: 100px;
+}
+
+
+
