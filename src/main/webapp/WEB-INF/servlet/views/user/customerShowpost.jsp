@@ -73,9 +73,18 @@
                         
                         <div style="position: absolute;top: 570px;left: 414px;width:800px;'height: 60px;border: 1px solid #707070;
                         border-radius: 8px;">
-                           <a href="/customerDown/${post_id}"> <p name="title" type="text" id="get_title" style="position: absolute;margin:0px;top:20px;left:20px;width: 800px;height:40px;font: normal normal normal 16px/26px Noto Sans KR;">
+                           <a href="/customerDown/${post_id}" style="display:none" id="file_download"> <p name="title" type="text" id="get_title" style="position: absolute;margin:0px;top:20px;left:20px;width: 800px;height:40px;font: normal normal normal 16px/26px Noto Sans KR;">
                        <span style="color:black">첨부파일 : </span>${filename} </p></a>
                         
+                        <script>
+                        	
+                        	if(`${filename}` != '' )
+                        		{
+                        		
+                        		document.getElementById("file_download").style.display="block";
+                        		
+                        		}
+                        </script>
                       
                         </div>
                         
@@ -98,7 +107,7 @@
 							
 							
 								<input type="hidden" name="" id="comment" >
-								<button style="position:absolute;top:1300px;left:414px;" onclick="onClick()">답변</button>
+								<div style="position:absolute;top:1300px;left:414px;padding-top:15px;width:80px;height:40px;border-radius:20px;background-color:#245AE3;color:white;font-size:18px;text-align:center" onclick="onClick()">답변</div>
 							
 							
 							<script>
@@ -136,10 +145,11 @@
 							}
 							</script>
 						</div>
+						
 						</c:if>
 					</sec:authorize>
 					
-					<div style="display:none;position: absolute;top:960px;left:414px;" id="show_comment">
+					<div style="display:none;position: absolute;top:910px;left:414px;" id="show_comment">
 						<p style="font: normal normal bold 30px/64px Noto Sans KR;">답변</p>
 					
 						<div style="position: absolute;top:90px;width: 1092px;height: 291px;border: 1px solid #707070;
@@ -161,10 +171,51 @@
 					
 					</script>
 					
-                        <div style="position: absolute;top: 1350px;left: 320px;">
+					
+					 <sec:authorize access="isAuthenticated()">
+                    <sec:authentication property="principal" var="principal" />
+                  
+					<c:if test="${principal.role eq 'ROLE_ADMIN'}">
+							<div class="col-lg-12" style="text-align: end; padding:20px 40px;position: absolute;top: 1330px;left: 373px;">
+                                
+                                
+                                <form method="post" action="/user/deleteShowpost" id="delpost">
+                                <input type="hidden" name="id" value="${post_id}">
+                                <div onclick="deletepost()" class="site-btn" style="position:relative;top:-48px;left:100px;text-align:center;padding-top:15px;height:40px;width:80px;border-radius:20px;background-color:#245AE3;font-size:18px;color:white;">삭제</div>
+                                
+                                </form>
+                                
+                                
+                                <script>
+                                function deletepost()
+                                {
+                                	if(confirm("게시글을 삭제하시겠습니까?"))
+                                	{
+                                		$('#delpost').submit();
+                                		alert("게시글을 삭제하였습니다.");
+                                	}
+                                	
+                                	
+                                }
+                                
+                                </script>
+                            </div>
+                            
+					</c:if>
+					</sec:authorize>
+					
+					<br/>
+					<br/>
+					<br/>
+					<br/>
+					
+                        <div style="position: absolute;top: 1430px;left: 320px;">
                             <hr style="height: 1px;width: 1280px;border-radius: 10px; background-color: #245AE3;">
                             <br/>
                         </div>
+                        
+                        
+                    
                        
 
   </div>

@@ -189,6 +189,22 @@ font-weight:bold;
 	padding:5%;
 }
 
+#imgControll_div{
+	margin:0 auto;
+	left:0;
+	right:0;
+	top:10%;
+	z-index:100;
+	text-align:center;
+	width: 720px;
+	height: 490px;
+	box-shadow: 5px 3px 6px #00000066;
+	border-radius: 30px;
+	opacity: 1;
+	background: rgba(248, 248, 250, 1) 0% 0% no-repeat padding-box;
+	padding:5%;
+}
+
 
 #background_gray2{
 	margin:0 auto;

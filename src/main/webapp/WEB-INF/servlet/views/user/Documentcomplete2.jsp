@@ -708,7 +708,7 @@
 												
 												
 												
-												<form action="/user/completesignedDownload" method="post" id="completed_submit">
+												<form action="/user/completesignedDownload2" method="post" id="completed_submit">
 														<a onclick="downpaper()" class="button">다운로드</a>
 														<input type="hidden" name="title" value="${paper_name}">
 														<input type="hidden" name="create_time" value="${create_date}">

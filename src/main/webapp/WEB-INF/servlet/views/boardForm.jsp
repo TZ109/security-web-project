@@ -35,8 +35,7 @@
 								</a>
 
 								<ul class="button_layer" style="display: flex;list-style : none; padding-left : 0;">
-									<li> <a class="btn5" onclick="test()" style="cursor:pointer"> 계약서 / 서명 만들기 </a>
-									</li>
+									
 									<li> <a onclick="location.href='/board'" class="btn5" style="cursor: pointer"> 자료실
 										</a> </li>
 									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="cursor: pointer"> 고객센터
@@ -133,7 +132,7 @@
                                		 <tr>
                                         <td>${data.specificType}</td>
                                         <td style="text-align:center;"> ${data.title}</td>
-                                        <td><a href="/boardDown/${data.pdfLink}">PDF</a><b> | </b><a href="/boardDown/${data.hwpLink}">HWP</a></td>
+                                        <td><a href="/boardDown/${data.serverpdf}">PDF</a><b> | </b><a href="/boardDown/${data.serverhwp}">HWP</a></td>
                                     </tr>
                               		
                                 </c:forEach>
@@ -146,9 +145,10 @@
                     <sec:authentication property="principal" var="principal" />
                   
 					<c:if test="${principal.role eq 'ROLE_ADMIN'}">
-					<div class="col-lg-12" style="text-align: end; padding:20px 40px;">
+							<div class="col-lg-12" style="text-align: end; padding:20px 40px;display:flex;">
                                 <a href="/user/boardUpload"><button type="submit" class="site-btn">양식 업로드</button></a>
                             </div>
+                            
 					</c:if>
 					</sec:authorize>
 							

@@ -3,6 +3,7 @@ package com.cos.security1.model;
 import javax.persistence.Column;
 
 import com.cos.security1.entity.Article;
+import com.cos.security1.entity.Copyright;
 
 import lombok.Data;
 import lombok.Getter;
@@ -152,6 +153,20 @@ public class MessageForm {
 		return newArticle;
 		
 		
+	}
+	
+	public Copyright toCopyright() {
+		Copyright copyright = new Copyright();
+		
+		copyright.setPapername(title);
+		copyright.setOrig_papername(title);
+		copyright.setPeople1_name(name1);
+		copyright.setPeople1_email(email1);
+
+		
+		copyright.setPeople_size(signNum);
+		
+		return copyright;
 	}
 	
 	

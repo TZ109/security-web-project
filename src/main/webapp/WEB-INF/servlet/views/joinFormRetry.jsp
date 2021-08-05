@@ -176,10 +176,10 @@
 		
 	}
 	
-	function sign_upload()
+	//function sign_upload()
 	{
-		var a= document.getElementById('inputfile');
-		a.click();
+		//var a= document.getElementById('inputfile');
+		//a.click();
 	}
 	
 	
@@ -232,7 +232,7 @@
 
 <div style="position: absolute; display: flex; justify-content: space-between; align-items: center;top: 448px;left: 761px">
 	<input type="text"  name="checkname" placeholder="이름" id="realName1" class="sign_up_input"  style="width: 398.00px;height: 60.00px;">
-	<input type="button" id="sign_up_load" value="사인 업로드" onclick="sign_upload()" style="height:50px" class="btn"><br/>
+	<!--  <input type="button" id="sign_up_load" value="사인 업로드" onclick="sign_upload()" style="height:50px" class="btn">--><br/>
 	</div>
 
 		<input type="hidden" id="result" value="${checkName}">
@@ -242,7 +242,7 @@
 <form method="post" action="/join" id="formId" enctype="multipart/form-data">
 		<input type="hidden" name="realname" id="realName2">
 		<input type="hidden"  name="username"  id="idName" >
-		<input style="display:none;" multiple="multiple" type="file" name="uploadFile" id="inputfile" class="button">
+		<!--  <input style="display:none;" multiple="multiple" type="file" name="uploadFile" id="inputfile" class="button">-->
 		
 		 <div style="position: absolute;top: 540px;left: 761px">
 		<input type="password" name="password"  placeholder="비밀번호" id="pass1" class="sign_up_input"  style="width: 398.00px;height: 60.00px;">
@@ -277,7 +277,7 @@
 		
 		var email1 = $('#idName').val();
 		
-		var a= document.getElementById('inputfile').value;
+		//var a= document.getElementById('inputfile').value;
 		var b= document.getElementById('sign_check').checked;
 		
 		
@@ -306,10 +306,10 @@
 			return false;
 		}
 		
-		if(!a)
+		//if(!a)
 		{
-			alert("서명을 업로드하십시오.");		
-			return false;
+			//alert("서명을 업로드하십시오.");		
+			//return false;
 		}
 
 		

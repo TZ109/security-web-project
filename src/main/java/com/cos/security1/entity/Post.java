@@ -34,8 +34,11 @@ public class Post {
 	@Column
 	private String title;
 	
-
-
+	@Column
+	private String serverpdf;
+	
+	@Column
+	private String serverhwp;
 
 	@Column
 	private String pdfLink;
@@ -46,20 +49,52 @@ public class Post {
 	
 	
 	
-	public Post(String postType, String specificType, String title, String pdfLink, String hwpLink) {
+	public Post(String postType, String specificType, String title, String serverpdf, String serverhwp,     String pdfLink, String hwpLink) {
 		super();
 		this.postType = postType;
 		this.specificType = specificType;
 		this.title = title;
+		this.serverpdf = serverpdf;
+		this.serverhwp = serverhwp;
 		this.pdfLink = pdfLink;
 		this.hwpLink = hwpLink;
 	}
+	
+	
 	
 	public Post()
 	{
 		
 	}
 	
+	
+	
+	
+	
+	public String getServerpdf() {
+		return serverpdf;
+	}
+
+
+
+	public void setServerpdf(String serverpdf) {
+		this.serverpdf = serverpdf;
+	}
+
+
+
+	public String getServerhwp() {
+		return serverhwp;
+	}
+
+
+
+	public void setServerhwp(String serverhwp) {
+		this.serverhwp = serverhwp;
+	}
+
+
+
 	public Long getId() {
 		return id;
 	}

@@ -101,9 +101,6 @@
 								style="display:none; position:fixed; left:0px; top:0px; background:rgba(28, 31, 38, 0.5); z-index:99; width:100%; height:100%;">
 							</div>
 							<div id="background_gray" style="display:none">
-								
-								
-							
 								<a onclick="close_div()" style="position:absolute; top:30px; right:30px"><img
 										src="/img/close.png" width=20px height=20px style="cursor:pointer" /></a>
 								<a onclick="prev_div()" style="position:absolute; top:30px; left:30px"><img
@@ -207,12 +204,13 @@
 
 									    var formdata = new FormData();
 									    formdata.append("file", file);
+									    formdata.append("title",`${paper_name}`);
+									    formdata.append("create_time",`${create_date}`);
 									    
-									  
 									    $.ajax({
 									    	async : true, 
 									        type : 'POST',
-									        url : '/user/changesign',
+									        url : '/user/changesign2',
 									        data : formdata,
 									        dataType: "json",
 									        processData : false,	// data 파라미터 강제 string 변환 방지!!
@@ -563,11 +561,6 @@
 								<div id="Root" style="height:200%">
 
 									<div id="controller_background_gray">
-									
-										<div style="padding-top:20px;top: 30px;left: 340px;width: 906px;height: 50px;text-align: center;background: #FFFFFF 0% 0% no-repeat padding-box;border-radius: 30px;position:absolute;">
-												<span style="width: auto; font: normal normal bold 25px/35px Noto Sans KR;font-size:30px;text-align: center;">${real_paper_name}</span>
-											
-											</div>
 										
 										<div id="remote_2">
 
@@ -606,16 +599,66 @@
 											</script>
 
 
+											<a onclick="test()" id="input_sign_ancher"><img src="/img/sign_on.svg" width=120px
+													style="cursor:pointer" id="input_sign"></a>
+													
+											<a onclick="signfile_upload()" id="input_sign_ancher"><img src="/img/sign_upload.png" width=120px
+													style="cursor:pointer" id="input_sign"></a>
+									
 											
+											<input type="file" style="display:none" id="signupfile" onchange="upload_sign2(this.files)">
+											
+											
+											<script type="text/javascript">
+												function signfile_upload()
+												{
+													document.getElementById('signupfile').click();
+												}
+											
+												function upload_sign2(files){
+														
+													
+													    var file = files[0];	// Blob 생성
 
+													    var formdata = new FormData();
+													    formdata.append("file", file);
+													    formdata.append("title",`${paper_name}`);
+													    formdata.append("create_time",`${create_date}`);
+													    
+													    $.ajax({
+													    	async : true, 
+													        type : 'POST',
+													        url : '/user/changesign2',
+													        data : formdata,
+													        dataType: "json",
+													        processData : false,	// data 파라미터 강제 string 변환 방지!!
+													      	contentType : false,	// application/x-www-form-urlencoded; 방지!!
+													        success : function (result) {
+													           if(result==0)
+													        	{
+													        	   
+																	alert('서명 변경성공');
+													        	}
+													        },
+													        error : function()
+													        {
+													        	alert('서명 변경실패');
+													        }
+													        
+														});
+													
+												}
+											</script>		
+													
+													
 											<br>
 											<div id="back_View"
-												style="width:240px;height:380px;padding-top:20px;padding-bottom:20px;padding-left:20px;margin-left:20px;text-align: center;display:none;border-radius: 30px;background: #E8EAEF 0% 0% no-repeat padding-box;">
+												style="width:250px;height:313px;padding-top:20px;padding-bottom:20px;padding-left:20px;margin-left:20px;text-align: center;display:none;background-image:url(/img/서명확인배경.svg);background-size:auto;background-repeat:no-repeat;background-position:center center">
 
 
 
 												<div id="first_Sign_View"
-													style="display:none;text-align:center;background-image:url(/img/서명확인뒷배경.png);margin-right:20px;background-repeat:no-repeat;background-position:center center;background-size:230px 140px">
+													style="display:none;text-align:center;background-image:url(/img/서명확인뒷배경.png);margin-right:20px;background-repeat:no-repeat;background-position:center center;">
 
 
 													<div
@@ -626,16 +669,17 @@
 															${person1_name}
 														<p>
 
-																	
-															<span  id="per1_ok">
-																&nbsp;<span
-																	style="color: blue">${person1_email}</span></span>
-																	<br/>
-																	<br/>
-																	<span  id="per1_ok">
-																<span
-																	style="color: blue">${person1_signtime}</span></span>
-														
+															<span style="display:none" id="per1_ok">승인 여부 :
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+																	style="color: blue">승인</span></span>
+															<span id="per1_no" style="display:none">승인 여부 :
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+																	style="color: red">미승인</span></span>
+															<input type=hidden value="${person1_issign}"
+																id="query_per1_sign">
+															<input type=hidden value="${person1_name}"
+																id="query_per1_name">
+															<br>
 													</div>
 												</div>
 
@@ -643,7 +687,7 @@
 
 
 												<div id="second_Sign_View"
-													style="display:none;text-align:center;background-image:url(/img/서명확인뒷배경.png);margin-right:20px;background-repeat:no-repeat;background-position:center center;background-size:230px 140px">
+													style="display:none;text-align:center;background-image:url(/img/서명확인뒷배경.png);margin-right:20px;background-repeat:no-repeat;background-position:center center;">
 
 													<div
 														style="font: normal normal bold 15px/17px Noto Sans KR;padding-top:8px;padding-bottom:10px;">
@@ -652,21 +696,23 @@
 															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${person2_name}
 														<p>
 
-															<span  id="per1_ok">
-																&nbsp;<span
-																	style="color: blue">${person2_email}</span></span>
-																	<br/>
-																	<br/>
-																	<span  id="per1_ok">
-																<span
-																	style="color: blue">${person2_signtime}</span></span>
+															<span style="display:none" id="per2_ok">승인 여부 :
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+																	style="color: blue">승인</span></span>
+															<span id="per2_no" style="display:none">승인 여부 :
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+																	style="color: red">미승인</span></span>
 
+															<input type=hidden value="${person2_issign}"
+																id="query_per2_sign">
+															<input type=hidden value="${person2_name}"
+																id="query_per2_name">
 													</div>
 												</div>
 
 
 												<div id="third_Sign_View"
-													style="display:none;text-align:center;background-image:url(/img/서명확인뒷배경.png);margin-right:20px;background-repeat:no-repeat;background-position:center center;background-size:230px 140px">
+													style="display:none;text-align:center;background-image:url(/img/서명확인뒷배경.png);margin-right:20px;background-repeat:no-repeat;background-position:center center;">
 
 													<div
 														style="font: normal normal bold 15px/17px Noto Sans KR;padding-top:8px;padding-bottom:10px;">
@@ -675,23 +721,62 @@
 															${person3_name}
 														<p>
 
-															<span  id="per1_ok">
-																&nbsp;<span
-																	style="color: blue">${person3_email}</span></span>
-																	<br/>
-																	<br/>
-																	<span  id="per1_ok">
-																<span
-																	style="color: blue">${person3_signtime}</span></span>
-															
-															
+															<span style="display:none" id="per3_ok">승인 여부 :
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+																	style="color: blue">승인</span></span>
+															<span id="per3_no" style="display:none">승인 여부 : &nbsp;
+																&nbsp;&nbsp;&nbsp;&nbsp;<span
+																	style="color: red">미승인</span></span>
+															<input type=hidden value="${person3_issign}"
+																id="query_per3_sign">
+															<input type=hidden value="${person3_name}"
+																id="query_per3_name">
 													</div>
 												</div>
 											</div>
 
+											<script>
 
-												<br>
-												<br>
+												window.onload = function () {
+
+
+													var a1 = $('#query_per1_sign').val();
+													var a2 = $('#query_per2_sign').val();
+													var a3 = $('#query_per3_sign').val();
+
+
+
+													if (a1 == '1') {
+														document.getElementById('per1_ok').style.display = "block";
+
+													}
+													else {
+														document.getElementById('per1_no').style.display = "block";
+													}
+
+
+													if (a2 == '1') {
+														document.getElementById('per2_ok').style.display = "block";
+
+													}
+													else {
+														document.getElementById('per2_no').style.display = "block";
+													}
+
+
+													if (a3 == '1') {
+														document.getElementById('per3_ok').style.display = "block";
+
+													}
+													else {
+														document.getElementById('per3_no').style.display = "block";
+													}
+
+												}
+
+											</script>
+
+
 
 											<div id="other_View" style="display:none">
 												<p style="font: normal normal bold 15px/15px Noto Sans KR;">페이지 이동</p>
@@ -705,31 +790,57 @@
 												<br>
 												<br>
 												<br>
-												
-												
-												
-												<form action="/user/completesignedDownload" method="post" id="completed_submit">
-														<a onclick="downpaper()" class="button">다운로드</a>
-														<input type="hidden" name="title" value="${paper_name}">
-														<input type="hidden" name="create_time" value="${create_date}">
-												</form>
-												
-												<script>
-												function downpaper()
-												{
-													$('#completed_submit').submit();
-												}
-												
-												</script>
-												
 												<br>
-												<br>	
+												<br>
 												<div style="display:flex;text-align: center;justify-content: center;">
 													<input id="btnout" type="button" onclick="location.href='/'"
-														value="확인" class="button"
-														style="font-size:20px;">
+														value="취소" class="button"
+														style="font-size:20px;margin-right:30px;">
 
-													
+													<form action="/user/sign2" method="post" id="signSub">
+														<input id="btnin" type="button" value="승인하기" onclick="to_sign()"
+															class="button" style="font-size:20px;">
+
+
+														<input type="hidden" value="${paper_name}" name="title">
+														<input type="hidden" value="${create_date}" name="create_time">
+
+
+
+														<script>
+															function to_sign() {
+																
+																$.ajax({
+																	async:true,
+																	type:"get",
+																	dataType:"json",
+																	url: "/user/checksign",
+																	success: function(result)
+																	{
+																		if(result==-1)
+																			{
+																			alert('서명파일이 존재하지 않습니다.\n서명을 생성해 주십시오.');
+																			}
+																		
+																		else
+																			{
+																			alert('사인 하였습니다.');
+																			$('#signSub').submit();
+																			}
+																	},
+																	error: function()
+																	{
+																		alert("error")
+																	}
+																	
+																	
+																});
+																
+															}
+
+														</script>
+
+													</form>
 												</div>
 											</div>
 											<script type="text/javascript">
@@ -839,20 +950,17 @@
 											</script>
 										</div>
 
-											
 										<div id="controller_background_white">
-										
-											
 											<div id="capture_layer">
 											
 											
 												<p name="title" style="margin-left:30px;font: normal normal bold 25px/15px Noto Sans KR;font-size:30px;text-align: center">
 
 												<div style="display:flex; justify-content: center;" >
-													<a id="serpdf" class="btn7" target="_blank" href="<spring:url value = '/pdfreview/${file_serverName}'/>" style="padding:2%;width: auto; font: normal normal bold 25px/35px Noto Sans KR;font-size:30px;text-align: center;display:none" >${orig_Name}</a>
+													<a id="serpdf" class="btn7" target="_blank" href="<spring:url value = '/pdfview/${file_serverName}'/>" style="padding:2%;width: auto; font: normal normal bold 25px/35px Noto Sans KR;font-size:30px;text-align: center;display:none" >${orig_Name}</a>
 												
 												
-												<img src="<spring:url value='/pdfreview/${file_serverName}'/>" style="margin-top:20px;width:800px;display:none" id="serimage">
+												<img src="<spring:url value='/pdfview/${file_serverName}'/>" style="margin-top:20px;width:800px;display:none" id="serimage">
 												</div>
 												<input type="hidden" value="${is_pdf}" id="ispdf">
 												<script>

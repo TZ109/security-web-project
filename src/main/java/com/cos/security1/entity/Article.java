@@ -35,6 +35,7 @@ public class Article {
 	private String orig_name;//파일 원래 이름
 	private long file_size;//파일 크기
 	
+	
 	private String plain_text; //(평문) - 랜덤 생성
 	
 	private String people1_num; //(서명 1 IDCODE)
@@ -42,6 +43,8 @@ public class Article {
 	private String people1_sign; //(서명 1 서명 여부) - 처음에는 0 해당 서명자가 싸인하면 1
 	private String people1_email; //(서명 1 이메일) - 메일
 	private String people1_signname;
+	private String people1_time;//서명한 시각
+	
 	
 	@Column(columnDefinition = "TEXT",length=1000)//text 길이는 1000
 	private String people1_encrypt; //(서명 1 암호문) - 처음에는 NULL 서명자가 싸인하면 암호문 
@@ -51,6 +54,7 @@ public class Article {
 	private String people2_sign; //(서명 2 서명 여부)
 	private String people2_email; //(서명 2 이메일)
 	private String people2_signname;
+	private String people2_time;
 	
 	@Column(columnDefinition = "TEXT",length=1000)//text 길이는 1000
 	private String people2_encrypt; //(서명 2 암호문)
@@ -60,6 +64,7 @@ public class Article {
 	private String people3_sign; //(서명 3 서명 여부)
 	private String people3_email; //(서명 3 이메일)
 	private String people3_signname;
+	private String people3_time;
 	
 	@Column(columnDefinition = "TEXT",length=1000)//text 길이는 1000
 	private String people3_encrypt; //(서명 3 암호문)
@@ -95,8 +100,48 @@ public class Article {
 	private int sign3_ypos;
 	
 	
+	@Column
+	private String result_hash;
 	
 	
+	
+	
+	
+	
+	
+	
+	public String getResult_hash() {
+		return result_hash;
+	}
+
+	public void setResult_hash(String result_hash) {
+		this.result_hash = result_hash;
+	}
+
+	public String getPeople1_time() {
+		return people1_time;
+	}
+
+	public void setPeople1_time(String people1_time) {
+		this.people1_time = people1_time;
+	}
+
+	public String getPeople2_time() {
+		return people2_time;
+	}
+
+	public void setPeople2_time(String people2_time) {
+		this.people2_time = people2_time;
+	}
+
+	public String getPeople3_time() {
+		return people3_time;
+	}
+
+	public void setPeople3_time(String people3_time) {
+		this.people3_time = people3_time;
+	}
+
 	public String getOrig_papername() {
 		return orig_papername;
 	}

@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.cos.security1.entity.Article;
+import com.cos.security1.entity.Copyright;
 
 //import org.thymeleaf.context.Context;//쉽지않네
 //import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -28,7 +29,7 @@ import com.cos.security1.entity.Article;
 //@Component
 @Service
 @AllArgsConstructor
-public class CustomMailSender {
+public class CustomMailSender2 {
 	@Autowired
 	 private JavaMailSender mailSender;
 
@@ -61,7 +62,7 @@ public class CustomMailSender {
         javaMailSender.send(message);
 	}*/
 	    
-	    public void gmailSend(Article article,String email, String signedPath) {
+	    public void gmailSend(Copyright article,String email, String signedPath) {
 	        String user = "teritemp1009@gmail.com"; // 네이버일 경우 네이버 계정, gmail경우 gmail 계정
 	        String password = "fhzvbzbuwygakqyn";   // 패스워드
 	        String content;
@@ -167,7 +168,7 @@ public class CustomMailSender {
 	    }
 
 
-	    private String build(Article article)
+	    private String build(Copyright article)
 	    {
 	    	//Context context = new Context();
 	    	//context.setVariable("text", context);
@@ -248,27 +249,25 @@ public class CustomMailSender {
 					+ "      <tr style=\"height:140px;border: 1px solid #444444;\">\n"
 					+ "        <td style=\"border: 1px solid #444444;\">\n"
 					+ "          <div style=\"font: normal normal bold 16px/21px Noto Sans KR;margin-bottom:10px;\">\n"
-					+ "            서명 참여자\n"
+					+ "            \n"
 					+ "          </div>\n"
 					+ "          <div style=\"font: normal normal normal 16px/21px Noto Sans KR;margin-bottom:10px;\">\n"
-					+ "            을\n"
+					+ "            \n"
 					+ "          </div>\n"
 					+ "          <div style=\"font: normal normal normal 16px/21px Noto Sans KR;\">\n"
-					+ "            병\n"
+					+ "            \n"
 					+ "          </div>\n"
 					+ "        </td>\n"
 					+ "        <td style=\"border: 1px solid #444444;\">\n"
 					+ "          <div style=\"font: normal normal normal 16px/21px Noto Sans KR;margin-bottom:10px;\">\n";
 	    	
-	    			if(article.getPeople_size()>=2)
-	    				temp = temp + article.getPeople2_name()+"("+article.getPeople2_email()+")";
+	    			
 					
 					temp = temp+ " \n"
 					+ "          </div>\n"
 					+ "          <div style=\"font: normal normal normal 16px/21px Noto Sans KR;\">\n";
 					
-					if(article.getPeople_size()==3)
-						temp = temp + article.getPeople3_name()+"("+article.getPeople3_email()+")";
+					
 					
 					temp = temp+ "\n"
 					+ "          </div>\n"
@@ -289,7 +288,7 @@ public class CustomMailSender {
 					+ "    </table>\n"
 					+ "    </div>\n"
 					+ "    <div style=\"text-align:left;margin-top:40px;margin-left:312px;\">\n"
-					+"<form target=\"_blank\" action='http://localhost:8090/user/DocumentcheckPage' method='post'>"
+					+"<form target=\"_blank\" action='http://localhost:8090/user/DocumentcheckPage2' method='post'>"
 					+ "		<input type='hidden' name='title' value='"+article.getPapername()+"'>"
 					+ "		<input type='hidden' name='create_time' value='"+article.getCreateDate()+"'>\""
 					+ "<button><img style=\"width: 451px;height: 88px;opacity: 1;\" src=\"https://postfiles.pstatic.net/MjAyMTA1MzBfMTY5/MDAxNjIyMzA5NTkzMTUz.YPoMHSKHBEJdjIOUn3Yo1znz04iNYUWiuio63rMsyFcg.r-bEcMrY1e1YpUlrLmMWgAH35R2szk_BXgCp9OBjoFwg.PNG.minkisim/%EC%84%9C%EB%AA%85%EB%B2%84%ED%8A%BC.png?type=w580\" alt=\"내용확인 및 서명하기 버튼\" loading=\"lazy\"/>"
@@ -306,7 +305,7 @@ public class CustomMailSender {
 	    }
 
 	    //서명 완료된 계약서 다운로드 폼
-	    private String build2(Article article)
+	    private String build2(Copyright article)
 	    {
 	    	//Context context = new Context();
 	    	//context.setVariable("text", context);
@@ -360,16 +359,16 @@ public class CustomMailSender {
 					+ "      <tr style=\"height:260px;border: 1px solid #444444;\">\n"
 					+ "        <td>\n"
 					+ "          <div style=\"font: normal normal bold 16px/21px Noto Sans KR;margin-bottom:10px;\">\n"
-					+ "            서명 참여자\n"
+					+ "            \n"
 					+ "          </div>\n"
 					+ "          <div style=\"font: normal normal normal 16px/21px Noto Sans KR;margin-bottom:10px;\">\n"
 					+ "            갑\n"
 					+ "          </div>\n"
 					+ "          <div style=\"font: normal normal normal 16px/21px Noto Sans KR;margin-bottom:10px;\">\n"
-					+ "            을\n"
+					+ "            \n"
 					+ "          </div>\n"
 					+ "          <div style=\"font: normal normal normal 16px/21px Noto Sans KR;\">\n"
-					+ "            병\n"
+					+ "            \n"
 					+ "          </div>\n"
 					+ "        </td>\n"
 					+ "        <td style=\"border: 1px solid #444444;text-align:center;\">\n"
@@ -378,15 +377,13 @@ public class CustomMailSender {
 					+ "          </div>\n"
 					+ "          <div style=\"font: normal normal normal 16px/21px Noto Sans KR;margin-bottom:13px;\">\n";
 					
-					if(article.getPeople_size()>=2)
-						temp = temp + article.getPeople2_name()+"("+article.getPeople2_email()+")";
+					
 					
 					temp = temp + "            \n"
 					+ "          </div>\n"
 					+ "          <div style=\"font: normal normal normal 16px/21px Noto Sans KR;\">\n";
 					
-					if(article.getPeople_size()==3)
-					temp = temp+ article.getPeople3_name()+"("+article.getPeople3_email()+")";
+					
 					
 					temp = temp+ "            \n"
 					+ "          </div>\n"
@@ -396,7 +393,7 @@ public class CustomMailSender {
 					+ "    </div>\n"
 					+ "    <div style=\"text-align:left;margin-top:40px;margin-left:312px;\">\n"
 					
-					+ "    <form action='http://baronarin.com/user/Documentcomplete2' method=\"post\" >\n"
+					+ "    <form action='http://baronarin.com/user/copyrightcomplete' method=\"post\" >\n"
 	
 					+ "	<input type=\"hidden\" name=\"serialnum\" value='"+article.getUniquenum()+"'>\n"
 					+ "     <button> <img style=\"width:451px;height:88px;\" src=\"https://postfiles.pstatic.net/MjAyMTA2MjlfNzgg/MDAxNjI0OTMyOTgyNDQy.vluQ7qLU8IyOsGaXWWGNhQJq05Oov5uM393LdzcqIskg.DXVqmC7wVJWaoqHvvG9Z5FOFfvmyAPFueG2JfUq5r0Mg.PNG.minkisim/%EA%B7%B8%EB%A3%B9_967.png?type=w580\"\n"

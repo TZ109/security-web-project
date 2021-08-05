@@ -4,7 +4,7 @@
 	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 		<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
 			<%@ page import="org.springframework.security.core.Authentication" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 
 				<!DOCTYPE html>
@@ -33,6 +33,9 @@
 
 								<ul class="button_layer" style="display: flex;list-style : none; padding-left : 0;">
 									
+									<li> <a class="btn5" onclick="location.href='/user/copyright'" style="cursor:pointer"> 저작권 등록하기 </a>
+									</li>
+									
 									<li> <a class="btn5" onclick="test()" style="cursor:pointer"> 계약서 / 서명 만들기 </a>
 									</li>
 									<li> <a onclick="location.href='/board'" class="btn5" style="cursor: pointer"> 자료실
@@ -53,7 +56,17 @@
 												style="cursor: pointer; text-decoration:none"> 로그인 </a> </li>
 									</sec:authorize>
 
+
+									
+									
+
 									<sec:authorize access="isAuthenticated()">
+										<sec:authentication property="principal" var="principal" />
+										<c:if test="${principal.role eq 'ROLE_ADMIN'}">
+												<li style="margin-left:14px; margin-right:6px;"><a href="/user/adminPage" class="btn5" style="cursor: pointer">관리자페이지</a></li>
+					                            
+										</c:if>
+										
 										<li style="margin-left:14px; margin-right:6px;"><a href="/user/myPage" class="btn5" style="cursor: pointer">마이페이지</a></li>
 										<li><a class="btn5" onclick="test2()" style="cursor:pointer">일련번호</a></li>
 										<li>
@@ -87,7 +100,7 @@
 										
 										function test2()
 										{
-											console.log("check1");
+											
 											document.getElementById("background_gray2").style.display ="inline-block";
 											document.getElementById("background_gray2").style.position ="fixed";
 											document.getElementById("first_layer2").style.display = "inline-block";
@@ -95,6 +108,8 @@
 											//document.getElementById('sign_Layer').style.display = "none";
 											document.getElementById("black_div").style.display ="block";
 										}
+										
+										
 										
 									</script>
 								</ul>

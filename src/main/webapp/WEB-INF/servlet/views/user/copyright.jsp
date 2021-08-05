@@ -157,7 +157,7 @@
 										<br><br><br>
 									</div>
 
-									<form action="/user/changesign" method="post" id="changingSign">
+									<form action="/user/changesign2" method="post" id="changingSign">
 
 										<input type="file" style="display:none" name="uploadFile">
 										<canvas id="sign" width="429" height="201"
@@ -600,38 +600,26 @@
 
 									<br>
 									<div style="font: normal normal normal 16px/30px Noto Sans KR;margin-bottom:10px;">
-										서명 인원 선택</div>
-									<input id="btn1" type="button" onclick="getNum(1)" value="1명" class="button">
-									<input id="btn2" type="button" onclick="getNum(2)" value="2명" class="button">
-									<input id="btn3" type="button" onclick="getNum(3)" value="3명" class="button"><br>
+										</div>
+									<br>	
+									<input id="btn1" type="button"  value="저작권 등록" class="button">
+									<br>
 									<script type="text/javascript">
 										//2명,3명의 button을 누르면 도장 이미지 추가
-										function getNum(a) {
-											Num = a;
+										window.onload = function(){
+											Num = 1;
 											var btn1 = document.getElementById("btn1");
-											var btn2 = document.getElementById("btn2");
-											var btn3 = document.getElementById("btn3");
+											
 
 											document.getElementById("input").style.visibility = "visible";
 
-											if (a == 1) {
-												btn2.style.background = "#e8eaef";
-												btn3.style.background = "#e8eaef";
-												$('#sign_num_count').val(1);
-											}
-											else if (a == 2) {
-												btn1.style.background = "#e8eaef";
-												btn3.style.background = "#e8eaef";
-												$('#sign_num_count').val(2);
-											}
-											else if (a == 3) {
-												btn1.style.background = "#e8eaef";
-												btn2.style.background = "#e8eaef";
-												$('#sign_num_count').val(3);
-											}
+											
+											btn1.style.background = "#e8eaef";
+											$('#sign_num_count').val(1);
+											
+											
 											btn1.disabled = 'disabled';
-											btn2.disabled = 'disabled';
-											btn3.disabled = 'disabled';
+											
 										}
 
 										function show_init() {
@@ -661,7 +649,7 @@
 									<br>
 									<div id="input" style="display:flex;justify-content: center;visibility:hidden">
 										<input id="input_doc" type="image" src="/img/document_on.png"
-											style="margin-right:15px;" onclick="click_inputfile(this)" />
+											style="" onclick="click_inputfile(this)" />
 										
 									</div>
 
@@ -841,12 +829,12 @@
 									</script>
 									<br>
 
-									<form action="/user/makeSign" method="post" id="submit_form"
+									<form action="/user/makeSign2" method="post" id="submit_form"
 										enctype="multipart/form-data">
 										<div id="first_Sign_View"
 											style="display:none;background-image:url(/img/참여자뒷배경.png);background-size:auto">
 											<br>
-											<div style="text-align:center"> 갑 </div>
+											<div style="text-align:center">갑</div>
 											<br>
 											<div class="input_row"><input type="text" id="name1" placeholder="이름"
 													style="background-image:url(/img/이름뒷배경.png);background-size:auto;border:none;border-right:0px; border-top:0px; border-left:0px; border-bottom:0px;"
@@ -1008,12 +996,12 @@
 													}
 												if(Num>=2 && (p2_result=='' || p2_result=='-1,-1'))
 												{
-												alert("을의 서명위치를 설정하십시오.");
+												alert("참여자2의 서명위치를 설정하십시오.");
 												return false;
 												}
 												if(Num==3 && (p3_result=='' || p3_result=='-1,-1'))
 												{
-												alert("병의 서명위치를 설정하십시오.");
+												alert("참여자3의 서명위치를 설정하십시오.");
 												return false;
 												}
 												
@@ -1154,12 +1142,12 @@
 									<div id="init" style="display:none;flex-direction:column;align-items: center;justify-content:center;">
 
 										
-										<br><input type="button" style="width:auto" value="갑 서명 위치"
+										<br><input type="button" style="width:auto" value="갑 서명 더하기"
 										onclick="add_img_layer('sign',0); this.onclick=null;"  class="button" /><br>
 										<br><input type="button" id="plus2" style="width:auto;visibility: hidden;"
-											value="을 서명 위치" onclick="add_img_layer('sign',1); this.onclick=null;"  class="button" /><br>
+											value="을 서명 더하기" onclick="add_img_layer('sign',1); this.onclick=null;"  class="button" /><br>
 										<br><input type="button" id="plus3" style="width:auto;visibility: hidden;"
-											value="병 서명 위치" onclick="add_img_layer('sign',2); this.onclick=null;"  class="button" /><br>
+											value="병 서명 더하기" onclick="add_img_layer('sign',2); this.onclick=null;"  class="button" /><br>
 
 									</div>
 								</div>

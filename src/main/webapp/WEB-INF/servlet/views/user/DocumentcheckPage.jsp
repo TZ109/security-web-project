@@ -192,6 +192,7 @@
 
 									<script type="text/javascript">
 									function saveSign() {
+										alert('등록하기');
 										var canvas1 = document.getElementById("sign");
 									    var imgDataUrl = canvas1.toDataURL('image/png');
 									    
@@ -204,8 +205,9 @@
 
 									    var formdata = new FormData();
 									    formdata.append("file", file);
+									    formdata.append("title",`${paper_name}`);
+									    formdata.append("create_time",`${create_date}`);
 									    
-									  
 									    $.ajax({
 									    	async : true, 
 									        type : 'POST',
@@ -600,6 +602,56 @@
 
 											<a onclick="test()" id="input_sign_ancher"><img src="/img/sign_on.svg" width=120px
 													style="cursor:pointer" id="input_sign"></a>
+													
+											
+											<a onclick="signfile_upload()" id="input_sign_ancher"><img src="/img/sign_upload.png" width=120px
+													style="cursor:pointer" id="input_sign"></a>
+									
+											
+											<input type="file" style="display:none" id="signupfile" onchange="upload_sign2(this.files)">
+											
+											
+											<script type="text/javascript">
+												function signfile_upload()
+												{
+													document.getElementById('signupfile').click();
+												}
+											
+												function upload_sign2(files){
+														
+													
+													    var file = files[0];	// Blob 생성
+
+													    var formdata = new FormData();
+													    formdata.append("file", file);
+													    formdata.append("title",`${paper_name}`);
+													    formdata.append("create_time",`${create_date}`);
+													    
+													    $.ajax({
+													    	async : true, 
+													        type : 'POST',
+													        url : '/user/changesign',
+													        data : formdata,
+													        dataType: "json",
+													        processData : false,	// data 파라미터 강제 string 변환 방지!!
+													      	contentType : false,	// application/x-www-form-urlencoded; 방지!!
+													        success : function (result) {
+													           if(result==0)
+													        	{
+													        	   
+																	alert('서명 변경성공');
+													        	}
+													        },
+													        error : function()
+													        {
+													        	alert('서명 변경실패');
+													        }
+													        
+														});
+													
+												}
+											</script>
+													
 
 											<br>
 											<div id="back_View"
@@ -759,8 +811,33 @@
 
 														<script>
 															function to_sign() {
-																alert('사인 하였습니다.');
-																$('#signSub').submit();
+																
+																$.ajax({
+																	async:true,
+																	type:"get",
+																	dataType:"json",
+																	url: "/user/checksign",
+																	success: function(result)
+																	{
+																		if(result==-1)
+																			{
+																			alert('서명파일이 존재하지 않습니다.\n서명을 생성해 주십시오.');
+																			}
+																		
+																		else
+																			{
+																			alert('사인 하였습니다.');
+																			$('#signSub').submit();
+																			}
+																	},
+																	error: function()
+																	{
+																		alert("error")
+																	}
+																	
+																	
+																});
+																
 															}
 
 														</script>

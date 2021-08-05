@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.swing.filechooser.FileSystemView;
 
 import org.apache.catalina.connector.Response;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,7 @@ import com.cos.security1.UserRsa;
 
 import com.cos.security1.config.auth.PrincipalDetails;
 import com.cos.security1.entity.Article;
+import com.cos.security1.entity.Copyright;
 import com.cos.security1.entity.CostomerCenter;
 import com.cos.security1.entity.Post;
 import com.cos.security1.file.FileService;
@@ -74,10 +76,12 @@ import com.cos.security1.model.MessageForm;
 import com.cos.security1.model.User;
 import com.cos.security1.pdfimage.Imagetest;
 import com.cos.security1.repository.ArticleRepository;
+import com.cos.security1.repository.CopyrightRepository;
 import com.cos.security1.repository.PostRepository;
 import com.cos.security1.repository.CustomerCenterRepository;
 import com.cos.security1.repository.UserRepository;
 import com.cos.security1.sendMail.CustomMailSender;
+import com.cos.security1.sendMail.CustomMailSender2;
 import com.cos.security1.sendMail.MailDto;
 //import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 
@@ -87,6 +91,7 @@ import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.security.PrivateKey;
@@ -97,6 +102,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.Vector;
@@ -104,6 +110,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 //import org.apache.commons.codec.binary.Base64;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.nio.charset.*;
@@ -129,6 +136,10 @@ public class IndexController {
 	private CustomMailSender customMailSender;
 	
 	@Autowired
+	private CustomMailSender2 customMailSender2;
+	
+	
+	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
@@ -140,6 +151,10 @@ public class IndexController {
 	
 	@Autowired
 	private PostRepository postRepository;
+	
+	@Autowired
+	private CopyrightRepository copyrightRepository;
+	
 	
 	
 	//localhost8090
@@ -339,6 +354,14 @@ public class IndexController {
 		return null;
 	}
 	
+	//저작권 등록
+	@GetMapping("/user/copyright")
+	public String copyright()
+	{
+		return "user/copyright";
+	}
+	
+	
 	
 	
 	//전자서명 작성하는 곳으로 가기
@@ -359,6 +382,7 @@ public class IndexController {
 		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		List<Article> articleList = articleRepository.findAll();
+		
 		
 		List<Article> ongoing= new Vector<Article>();
 		List<Article> completed= new Vector<Article>();
@@ -396,6 +420,27 @@ public class IndexController {
 		
 		model.addAttribute("name", principal.getRealname());
 		model.addAttribute("email", principal.getUsername());
+		model.addAttribute("signname", principal.getSignname());
+		
+		List<Copyright> copyrightList = copyrightRepository.findAll();
+		
+		List<Copyright> ongoing2 = new Vector<Copyright>();
+		List<Copyright> completed2 = new Vector<Copyright>();
+		
+		for(Copyright arti : copyrightList)
+		{
+			if(principal.getUsername().equals(arti.getPeople1_email()))
+			{
+				if(arti.getSign_count() == arti.getPeople_size())
+					completed2.add(arti);
+				
+				else
+					ongoing2.add(arti);
+			}
+			
+			
+				
+		}
 		
 		
 		
@@ -411,8 +456,159 @@ public class IndexController {
 
 		}
 		
+		
+		if(ongoing2 != null)
+		{
+			
+			model.addAttribute("ongoing2", ongoing2);
+
+		}
+		if(completed2 != null)
+		{
+			model.addAttribute("completed2", completed2);
+
+		}
+		
 		return "user/myPage";
 	}
+	
+	@SuppressWarnings("unused")
+	@PostMapping("/user/adminmyPage")
+	public String adminmypage(Model model, String username)
+	{
+		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		if(!(principal!=null && principal.getRole().equals("ROLE_ADMIN")))
+		{
+			return "redirect:/";
+		}
+		
+		
+		
+		User user = userRepository.findByUsername(username);
+		
+		List<Article> articleList = articleRepository.findAll();
+		
+		
+		List<Article> ongoing= new Vector<Article>();
+		List<Article> completed= new Vector<Article>();
+		
+		for(Article arti : articleList)
+		{
+			if(user.getUsername().equals(arti.getPeople1_email()))
+			{
+				if(arti.getSign_count() == arti.getPeople_size())
+					completed.add(arti);
+				
+				else
+					ongoing.add(arti);
+			}
+			
+			if(user.getUsername().equals(arti.getPeople2_email()))
+			{
+				if(arti.getSign_count() == arti.getPeople_size())
+					completed.add(arti);
+				
+				else
+					ongoing.add(arti);
+			}
+			
+			if(user.getUsername().equals(arti.getPeople3_email()))
+			{
+				if(arti.getSign_count() == arti.getPeople_size())
+					completed.add(arti);
+				
+				else
+					ongoing.add(arti);
+			}
+				
+		}
+		
+		model.addAttribute("name", user.getRealname());
+		model.addAttribute("email", user.getUsername());
+		model.addAttribute("signname", user.getSignname());
+		
+		List<Copyright> copyrightList = copyrightRepository.findAll();
+		
+		List<Copyright> ongoing2 = new Vector<Copyright>();
+		List<Copyright> completed2 = new Vector<Copyright>();
+		
+		for(Copyright arti : copyrightList)
+		{
+			if(user.getUsername().equals(arti.getPeople1_email()))
+			{
+				if(arti.getSign_count() == arti.getPeople_size())
+					completed2.add(arti);
+				
+				else
+					ongoing2.add(arti);
+			}
+			
+			
+				
+		}
+		
+		
+		if(ongoing != null)
+		{
+			
+			model.addAttribute("ongoing", ongoing);
+
+		}
+		if(completed != null)
+		{
+			model.addAttribute("completed", completed);
+
+		}
+		
+		
+		if(ongoing2 != null)
+		{
+			
+			model.addAttribute("ongoing2", ongoing2);
+
+		}
+		if(completed2 != null)
+		{
+			model.addAttribute("completed2", completed2);
+
+		}
+		
+		return "user/myPage";
+	}
+	
+	//마이페이지
+		@SuppressWarnings("unused")
+		@GetMapping("/user/adminPage")
+		public String adminpage(Model model)
+		{
+			PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			
+			if(!(principal!=null && principal.getRole().equals("ROLE_ADMIN")))
+			{
+				return "redirect:/";
+			}
+			
+			
+			List<User> userList = userRepository.findAll();
+			
+			
+			
+			
+			model.addAttribute("name", principal.getRealname());
+			model.addAttribute("email", principal.getUsername());
+			model.addAttribute("signname", principal.getSignname());
+			
+			model.addAttribute("userList", userList);
+			
+			
+			return "admin/adminPage";
+		}
+	
+	
+	
+	
 
 
 	@GetMapping("/user/editor")
@@ -428,7 +624,13 @@ public class IndexController {
 		CostomerCenter query;
 		if(checkfile.equals("yes"))
 			 {
-				query = new CostomerCenter( title, textbody, principal.getUsername(), principal.getRealname(),null, secret, secretpassword, file.getOriginalFilename(), UUID.randomUUID().toString().replaceAll("-", "")+file.getOriginalFilename());
+				SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd");
+				Date time = new Date();
+				String time1 = format1.format(time);
+				String servername = time1 + UUID.randomUUID().toString().replaceAll("-", "");
+				String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+				
+				query = new CostomerCenter( title, textbody, principal.getUsername(), principal.getRealname(),null, secret, secretpassword, file.getOriginalFilename(),servername + "."+ extension);
 				fileService.fileCustomerCenterUpload(file, query.getServer_filename());
 				//model.addAttribute("filename",file.getOriginalFilename());
 			 }
@@ -501,6 +703,33 @@ public class IndexController {
 		model.addAttribute("title", costomerCenter.getTitle());
 		model.addAttribute("textbody",costomerCenter.getTextbody());
 		return "user/customerShowpost";
+	}
+	
+	@PostMapping("/user/deleteShowpost")
+	public String deletepost(@RequestParam("id") String id, Model model)
+	{
+		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		if(principal!=null && principal.getRole().equals("ROLE_ADMIN"))
+		{
+			CostomerCenter cos = costomerCenterRepository.findById(Long.parseLong(id));
+			
+			if(cos.getServer_filename() != null && cos.getServer_filename().length() >= 1)
+			{
+				File delfile = new File(fileService.getUpCustomerCenter() + File.separator + cos.getServer_filename());
+				delfile.delete();
+				System.out.println("게시글 파일 삭제");
+			}
+			System.out.println("삭제할 게시글 id : "+id);
+			costomerCenterRepository.deleteById(Long.parseLong(id));
+			//파일 존재할 때 
+			System.out.println("게시글 삭제");
+			
+
+		}
+		
+		
+		return "redirect:/";
 	}
 	
 	@GetMapping(value = "/customerDown/{id}")
@@ -646,15 +875,55 @@ public class IndexController {
 		return "redirect:/";
 	}
 	
+	
+	@ResponseBody
+	@GetMapping("/user/makeAdmin")
+	public int makeAdmin(@RequestParam String target)
+	{
+		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		
+		//요청한 사람이 관리자인지 확인
+		if(principal!=null && principal.getRole().equals("ROLE_ADMIN"))
+		{
+			User user = userRepository.findByUsername(target);
+			
+			//해당 유저가 없음
+			if(user == null)
+			{
+				return 0;
+			}
+			
+			
+			user.setRole("ROLE_ADMIN");
+			userRepository.save(user);
+			return 1;
+		}
+		
+		return -1;
+	}
+	
+	
 	@PostMapping("/boardUp")
 	public String boardUp(String postType, String special,String title,
 			@RequestParam("hwp_file") MultipartFile hwp_file,@RequestParam("pdf_file") MultipartFile pdf_file)
 	{
-		Post post = new Post(postType, special, title, pdf_file.getOriginalFilename(), hwp_file.getOriginalFilename());
+		
+		SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd");
+		Date time = new Date();
+		String time1 = format1.format(time);
+		String servername = time1 + UUID.randomUUID().toString().replaceAll("-", "");
+		
+		
+		
+		Post post = new Post(postType, special, title, servername+".pdf", servername+".hwp", pdf_file.getOriginalFilename(), hwp_file.getOriginalFilename());
 		postRepository.save(post);
 		
-		fileService.fileBoardUpload(pdf_file, pdf_file.getOriginalFilename());
-		fileService.fileBoardUpload(hwp_file, hwp_file.getOriginalFilename());
+		
+		
+		
+		fileService.fileBoardUpload(pdf_file, servername + ".pdf");
+		fileService.fileBoardUpload(hwp_file, servername+".hwp");
 		
 		return "redirect:/board";
 	}
@@ -662,9 +931,32 @@ public class IndexController {
 	@GetMapping(value = "/boardDown/{id}")
     public ResponseEntity<InputStreamResource> getBoard(@PathVariable("id") String id) throws FileNotFoundException, UnsupportedEncodingException {
 
+		Post temppost;
 		System.out.println("파일명 : "+id );
-		 String encordedFilename = URLEncoder.encode(id,"UTF-8").replace("+", "%20");
-        String filePath = fileService.getUpBoard() +File.separator +id;
+		
+		if(id==null)
+			return null;
+		
+		
+		
+		
+		
+		String encordedFilename;
+		String filePath;
+		
+		if(id.contains(".hwp"))
+		{
+			temppost = postRepository.findByServerhwp(id);
+			filePath = fileService.getUpBoard() +File.separator +temppost.getServerhwp();
+			 encordedFilename = URLEncoder.encode(temppost.getHwpLink(),"UTF-8").replace("+", "%20");
+		}
+		else
+		{
+			temppost = postRepository.findByServerpdf(id);
+			filePath = fileService.getUpBoard() +File.separator +temppost.getServerpdf();
+			encordedFilename = URLEncoder.encode(temppost.getPdfLink(),"UTF-8").replace("+", "%20");
+		}
+        
         File file = new File(filePath);
         HttpHeaders headers = new HttpHeaders();      
         headers.add("content-disposition", "attachment;filename=" +encordedFilename);
@@ -738,6 +1030,9 @@ public class IndexController {
 		savedArticle.setSer_fileName(fileService.fileUpload(file, null));
 		//경로저장
 		savedArticle.setFile_path(fileService.getUpDownloadDir()+File.separator+savedArticle.getSer_fileName());
+		
+		
+		
 		
 		articleRepository.save(savedArticle); 
 		//System.out.println("계약서 생성 시간1 : "+savedArticle.getCreateDate().toString() );
@@ -849,16 +1144,81 @@ public class IndexController {
 		return "redirect:/";//홈페이지로 보냄
 	}
 	
+	@PostMapping("/user/makeSign2")
+	public String makeSign2(MessageForm message, @RequestParam("uploadFile") MultipartFile file, HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception
+	{
+	
+		
+		// redirectAttributes.addFlashAttribute("message",
+	              //  "You successfully uploaded " + file.getOriginalFilename() + "!");
+		
+		 //db저장
+		Copyright savedArticle = message.toCopyright();
+		
+		System.out.println("첫번째 사인 좌표 x : "+message.getPer1()[0]+", y : "+message.getPer1()[1]);
+		
+		
+		
+		if(message.getPer1()!=null && message.getPer1().length==2)
+		{
+			savedArticle.setSign1_xpos(Integer.parseInt( message.getPer1()[0].replaceAll("[^0-9]", "")));
+			savedArticle.setSign1_ypos(Integer.parseInt( message.getPer1()[1].replaceAll("[^0-9]", "")));
+		}
+		
+		
+		
+		savedArticle.setSign_count(0);
+		savedArticle.setPlain_text("계약서 원문");
+		savedArticle.setFile_size(file.getSize());
+		savedArticle.setOrig_name(file.getOriginalFilename());
+		//서버에 저장된 파일이름 저장
+		savedArticle.setSer_fileName(fileService.fileUpload(file, null));
+		//경로저장
+		savedArticle.setFile_path(fileService.getUpDownloadDir()+File.separator+savedArticle.getSer_fileName());
+		
+
+		User user = userRepository.findByUsername(savedArticle.getPeople1_email());
+		if(user!=null)
+		{
+			savedArticle.setPeople1_signname(user.getSignname());
+		}
+		
+		 
+		
+		
+		
+		copyrightRepository.save(savedArticle); 
+		//System.out.println("계약서 생성 시간1 : "+savedArticle.getCreateDate().toString() );
+
+		savedArticle.setUniquenum(savedArticle.getCreateDate().toString().replaceAll("[^0-9]", ""));
+		//id_계약서이름으로 계약서 이름 지정
+		String tempString = savedArticle.getPapername();
+		savedArticle.setPapername(savedArticle.getId().toString()+"_"+tempString);
+	
+	
+		
+		customMailSender2.gmailSend(savedArticle,savedArticle.getPeople1_email(),null);
+	
+		copyrightRepository.save(savedArticle);
+			
+		
+		
+		
+		return "redirect:/";//홈페이지로 보냄
+	}
+	
+	
+	
 	@ResponseBody//페이지로 응답할 것임을 명시
 	@PostMapping("/user/changesign")
-	public int changesign(@RequestParam(value="file", required=true) MultipartFile file)
+	public int changesign(@RequestParam(value="file", required=true) MultipartFile file, @RequestParam(required=false) String title, @RequestParam(required=false) String create_time)
 	{
 		System.out.println("파일 이름 : "+ file.getSize());
 		int result=0;
 		
 		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-		
+		Article tempArt = articleRepository.findByPapername(title);
 
 		User tempUser =  userRepository.findByUsername(principal.getUsername());
 		
@@ -876,46 +1236,118 @@ public class IndexController {
 					
 			}
 			
-			fileService.fileUpload(file, principal.getSignname()+".png");//tempUser.getSignname());
-		
-
+			fileService.fileUpload(file, principal.getUsername()+"_sign.png");//tempUser.getSignname());
 			
-		}
-	
-		/*
-		if(tempArt!=null && tempArt.getCreateDate().toString().equals(create_time.toString()))
-		{
-			boolean setting = false;
-			if(userEmail.equals(tempArt.getPeople1_email()))
+			//article db도 변경시켜야함
+			if(tempArt!=null && tempArt.getCreateDate().toString().equals(create_time.toString()))
 			{
-				tempArt.setPeople1_signname(file.getName());
-				setting=true;
-			}
-			
-			else if(userEmail.equals(tempArt.getPeople2_email()))
-			{
-				tempArt.setPeople2_signname(file.getName());
-				setting=true;
-			}
-			
-			else if(userEmail.equals(tempArt.getPeople3_email()))
-			{
-				tempArt.setPeople3_signname(file.getName());
-				setting=true;
-			}
-			
-			if(setting)
-			{
+				
+				if(tempArt.getPeople1_name().equals(principal.getRealname()))
+				{
+					tempArt.setPeople1_signname(principal.getUsername()+"_sign.png");
+				}
+				
+				else if(tempArt.getPeople2_name().equals(principal.getRealname()))
+				{
+					tempArt.setPeople2_signname(principal.getUsername()+"_sign.png");
+				}
+				
+				else if(tempArt.getPeople3_name().equals(principal.getRealname()))
+				{
+					tempArt.setPeople3_signname(principal.getUsername()+"_sign.png");
+				}
 				articleRepository.save(tempArt);
-				result=2;
 			}
 			
+			
+			
+			tempUser.setSignname(principal.getUsername()+"_sign.png");
+			userRepository.save(tempUser);
 		}
-		*/
+
 		
 		
 		return result;
 	}
+	
+	@ResponseBody//페이지로 응답할 것임을 명시
+	@PostMapping("/user/changesign2")
+	public int changesign2(@RequestParam(value="file", required=true) MultipartFile file, @RequestParam(required=false) String title, @RequestParam(required=false) String create_time)
+	{
+		System.out.println("파일 이름 : "+ file.getSize());
+		int result=0;
+		
+		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		Copyright tempArt = copyrightRepository.findByPapername(title);
+
+		User tempUser =  userRepository.findByUsername(principal.getUsername());
+		
+		if (tempUser != null ) {
+			System.out.println("서명파일 : " + tempUser.getSignname());
+			if (tempUser.getSignname() != null) {
+				File deleteFile = new File(fileService.getUpDownloadDir() + File.separator + "userSign" + File.separator + principal.getSignname());
+				
+				if(deleteFile.delete())
+				{
+					System.out.println("서명파일 삭제완료");
+				
+				}
+				
+					
+			}
+			
+			fileService.fileUpload(file, principal.getUsername()+"_sign.png");//tempUser.getSignname());
+			
+			//article db도 변경시켜야함
+			if(tempArt!=null && tempArt.getCreateDate().toString().equals(create_time.toString()))
+			{
+				
+				if(tempArt.getPeople1_name().equals(principal.getRealname()))
+				{
+					tempArt.setPeople1_signname(principal.getUsername()+"_sign.png");
+				}
+			
+				copyrightRepository.save(tempArt);
+			}
+			
+			
+			
+			tempUser.setSignname(principal.getUsername()+"_sign.png");
+			userRepository.save(tempUser);
+		}
+
+		
+		
+		return result;
+	}
+	
+	
+	@ResponseBody//페이지로 응답할 것임을 명시
+	@GetMapping("/user/checksign")
+	public int checkSign()
+	{
+		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		
+
+		User tempUser =  userRepository.findByUsername(principal.getUsername());
+		
+		if (tempUser != null && tempUser.getSignname() != null && tempUser.getSignname().length() >= 1) {
+			File file =new File("input"+File.separator + "userSign"+File.separator+tempUser.getSignname());
+			System.out.println("서명파일 확인 : " + file.getAbsolutePath());
+			
+			if(file.exists())
+			{
+				return 1;
+			}
+		}
+		
+		
+		return -1;
+	}
+	
+	
 	
 	
 	//이메일로 타고온 전자서명 사인
@@ -942,6 +1374,9 @@ public class IndexController {
 			if(tempArt.getOrig_name().contains(".pdf"))
 				model.addAttribute("is_pdf","yes");
 			
+			
+			model.addAttribute("real_paper_name", tempArt.getPapername().substring(tempArt.getPapername().indexOf("_")+1));
+			
 			model.addAttribute("paper_name", tempArt.getPapername());
 			model.addAttribute("person_num", tempArt.getPeople_size());
 			
@@ -957,6 +1392,19 @@ public class IndexController {
 			model.addAttribute("person1_issign",tempArt.getPeople1_sign());
 			model.addAttribute("person2_issign",tempArt.getPeople2_sign());
 			model.addAttribute("person3_issign",tempArt.getPeople3_sign());
+			
+			model.addAttribute("person1_signtime",tempArt.getPeople1_time());
+			model.addAttribute("person2_signtime",tempArt.getPeople2_time());
+			model.addAttribute("person3_signtime",tempArt.getPeople3_time());
+			
+			model.addAttribute("person1_email",tempArt.getPeople1_email());
+			model.addAttribute("person2_email",tempArt.getPeople2_email());
+			model.addAttribute("person3_email",tempArt.getPeople3_email());
+			
+			model.addAttribute("uniquenum",tempArt.getUniquenum());
+			model.addAttribute("peoplesize", tempArt.getPeople_size());
+			model.addAttribute("signcount", tempArt.getSign_count());
+			model.addAttribute("filesize", tempArt.getFile_size());
 		}
 		
 		return "user/Documentcomplete";
@@ -972,6 +1420,8 @@ public class IndexController {
 			if(tempArt.getOrig_name().contains(".pdf"))
 				model.addAttribute("is_pdf","yes");
 			
+			model.addAttribute("real_paper_name", tempArt.getPapername().substring(tempArt.getPapername().indexOf("_")+1));
+			
 			model.addAttribute("paper_name", tempArt.getPapername());
 			model.addAttribute("person_num", tempArt.getPeople_size());
 			
@@ -987,12 +1437,65 @@ public class IndexController {
 			model.addAttribute("person1_issign",tempArt.getPeople1_sign());
 			model.addAttribute("person2_issign",tempArt.getPeople2_sign());
 			model.addAttribute("person3_issign",tempArt.getPeople3_sign());
+			
+			model.addAttribute("person1_signtime",tempArt.getPeople1_time());
+			model.addAttribute("person2_signtime",tempArt.getPeople2_time());
+			model.addAttribute("person3_signtime",tempArt.getPeople3_time());
+			
+			model.addAttribute("person1_email",tempArt.getPeople1_email());
+			model.addAttribute("person2_email",tempArt.getPeople2_email());
+			model.addAttribute("person3_email",tempArt.getPeople3_email());
+			
+			model.addAttribute("uniquenum",tempArt.getUniquenum());
+			model.addAttribute("peoplesize", tempArt.getPeople_size());
+			model.addAttribute("signcount", tempArt.getSign_count());
+			model.addAttribute("filesize", tempArt.getFile_size());
 		}
 		
 		return "user/Documentcomplete";
 	}
 	
-	
+	@PostMapping("/user/copyrightcomplete")
+	public String copyrightComplete(String serialnum, Model model )
+	{
+		Copyright tempArt = copyrightRepository.findByUniquenum(serialnum);
+		System.out.println("메인페이지에서 연결");
+		if(tempArt!=null)//해당 이름의 계약서가 있고, 계약서 생성시기도 일치할 때 
+		{
+			System.out.println("저작권 모델 추가");
+			if(tempArt.getOrig_name().contains(".pdf"))
+				model.addAttribute("is_pdf","yes");
+			
+			model.addAttribute("real_paper_name", tempArt.getPapername().substring(tempArt.getPapername().indexOf("_")+1));
+			
+			model.addAttribute("paper_name", tempArt.getPapername());
+			model.addAttribute("person_num", tempArt.getPeople_size());
+			
+			model.addAttribute("file_serverName", tempArt.getSer_fileName());
+			model.addAttribute("orig_Name", tempArt.getOrig_name());
+			//model.addAttribute("file_serPath", tempArt.getFile_path());
+			model.addAttribute("create_date",tempArt.getCreateDate());
+			
+			model.addAttribute("person1_name",tempArt.getPeople1_name());
+
+			
+			model.addAttribute("person1_issign",tempArt.getPeople1_sign());
+
+			
+			model.addAttribute("person1_signtime",tempArt.getPeople1_time());
+
+			
+			model.addAttribute("person1_email",tempArt.getPeople1_email());
+
+			
+			model.addAttribute("uniquenum",tempArt.getUniquenum());
+			model.addAttribute("peoplesize", tempArt.getPeople_size());
+			model.addAttribute("signcount", tempArt.getSign_count());
+			model.addAttribute("filesize", tempArt.getFile_size());
+		}
+		
+		return "user/Documentcomplete2";
+	}
 	
 	@GetMapping("/user/DocumentcheckPage")
 	public String docu( )
@@ -1141,6 +1644,101 @@ public class IndexController {
 		return "redirect:/";
 	}
 	
+	
+	@PostMapping("/user/DocumentcheckPage2")
+	public String documentCheckPage2( String title, Timestamp create_time , Model model, HttpServletResponse response)//title에 계약서 이름이 담겨져 있음, create_time에 계약서 생성 시간 담김
+	{
+		//유저 정보 가져오기
+		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		//계약서 이름으로 db에서 계약서 정보 찾기
+		Copyright tempArt = copyrightRepository.findByPapername(title);
+		
+		boolean signCheck = false;
+		if(tempArt != null)
+		{
+
+			String one = "1";
+			System.out.println("계약 인원수 : " + tempArt.getPeople_size());
+			
+				if (one.equals(tempArt.getPeople1_sign())) {
+					System.out.println("1인 싸인 완료");
+					signCheck = true;
+
+				}
+
+		}
+		
+		//서명을 다 한 상태라면 메인화면으로 전송, 혹은 db 손상되어 데이터 유실 시
+		if(tempArt==null || signCheck)
+		{
+			if(signCheck)
+				model.addAttribute("sign_complete","complete");
+			
+			else if(tempArt==null)
+				model.addAttribute("sign_null","null");
+			
+			return "temp";
+		}
+		
+		
+		
+		
+		if(tempArt!=null && tempArt.getCreateDate().toString().equals(create_time.toString()))//해당 이름의 계약서가 있고, 계약서 생성시기도 일치할 때 
+			{
+				System.out.println("계약서 찾음");
+				boolean foundName = false;
+				
+				if(tempArt.getPeople1_name().equals(principal.getRealname()))
+					foundName=true;
+				
+			
+				if(foundName)//계약서에 해당 이름이 있다면
+				{
+					Resource tempResource =null;
+					try {
+						//서버에 있는 파일 찾기
+						tempResource = fileService.loadFile(tempArt.getSer_fileName());
+						System.out.println("파일 찾기 성공 : " + tempResource.getFilename());
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						System.out.println("파일을 찾을 수 없습니다.");
+					}
+
+					
+					
+					if(tempArt.getOrig_name().contains(".pdf"))
+						model.addAttribute("is_pdf","yes");
+					
+					
+					model.addAttribute("paper_name", tempArt.getPapername());
+					model.addAttribute("person_num", tempArt.getPeople_size());
+					
+					model.addAttribute("file_serverName", tempArt.getSer_fileName());
+					model.addAttribute("orig_Name", tempArt.getOrig_name());
+					//model.addAttribute("file_serPath", tempArt.getFile_path());
+					model.addAttribute("create_date",tempArt.getCreateDate());
+					
+					model.addAttribute("person1_name",tempArt.getPeople1_name());
+					
+					model.addAttribute("person1_issign",tempArt.getPeople1_sign());
+					
+					
+					return "user/DocumentcheckPage2";
+				}
+					
+				
+			}
+		//아니라면 홈페이지로 이동
+		return "redirect:/";
+	}
+	
+	
+	
+	
+	
+	
+	
 	@GetMapping(value = "/image/{imagename}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)//, produces = MediaType.IMAGE_JPEG_VALUE)//전송하는 스트림이 이미지임을 명시
 	public ResponseEntity<byte[]> userSearch(@PathVariable("imagename") String imagename) throws IOException
 	{ 
@@ -1229,6 +1827,38 @@ public class IndexController {
 			
 	}
 
+	@GetMapping(value = "/showsign/{id}")
+    public ResponseEntity<InputStreamResource> getSign(@PathVariable("id") String id) throws FileNotFoundException {
+
+		System.out.println("파일명 : "+id );
+		
+        String filePath = fileService.getUpDownloadDir() +File.separator+"userSign"+File.separator +id;
+        File file = new File(filePath);
+        HttpHeaders headers = new HttpHeaders();      
+        headers.add("content-disposition", "inline;filename=" +id);
+        
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+        if(id.indexOf(".pdf")!=-1)
+		{
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(resource);
+		}
+		else
+		{
+			return ResponseEntity.ok()
+	                .headers(headers)
+	                .contentLength(file.length())
+	                .contentType(MediaType.parseMediaType("application/octet-stream"))
+	                .body(resource);
+		}
+			
+	}
+	
+	
+	
 	
 	@GetMapping("/testing_viewer")
 	public String testing_viewer() throws FileNotFoundException
@@ -1261,7 +1891,14 @@ public class IndexController {
 				
 				System.out.println("원문 : " +tempArt.getPlain_text());
 				
-				if(tempArt.getPeople1_name().equals(principal.getRealname()))
+				
+				SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
+				Date time = new Date();
+				String time1 = format1.format(time);
+				
+				String one="1";
+				
+				if(tempArt.getPeople1_name().equals(principal.getRealname()) && tempArt.getPeople1_email().equals(principal.getUsername())  && !one.equals(tempArt.getPeople1_sign()))
 				{
 					sign = UserRsa.sign(tempArt.getPlain_text(), principal.getPrivateKey());
 					tempArt.setPeople1_encrypt(sign);
@@ -1269,12 +1906,13 @@ public class IndexController {
 					System.out.println("사인1확인 결과 : "+ UserRsa.verifySignarue(tempArt.getPlain_text(),sign, principal.getPublicKey()));
 					tempArt.setPeople1_sign("1");
 					tempArt.setSign_count(tempArt.getSign_count()+1);
+					tempArt.setPeople1_time(time1);
 					//articleRepository.deleteById(tempArt.getId());
 					articleRepository.save(tempArt);
 				}
 					
 				
-				else if(tempArt.getPeople2_name().equals(principal.getRealname()))
+				else if(tempArt.getPeople2_name().equals(principal.getRealname()) && tempArt.getPeople2_email().equals(principal.getUsername()) && !one.equals(tempArt.getPeople2_sign()))
 				{
 					sign = UserRsa.sign(tempArt.getPlain_text(), principal.getPrivateKey());
 					tempArt.setPeople2_encrypt(sign);
@@ -1282,11 +1920,12 @@ public class IndexController {
 					System.out.println("사인2확인 결과 : "+ UserRsa.verifySignarue(tempArt.getPlain_text(),sign, principal.getPublicKey()));
 					tempArt.setPeople2_sign("1");
 					tempArt.setSign_count(tempArt.getSign_count()+1);
+					tempArt.setPeople2_time(time1);
 					//articleRepository.deleteById(tempArt.getId());
 					articleRepository.save(tempArt);
 				}
 				
-				else if(tempArt.getPeople3_name().equals(principal.getRealname()))
+				else if(tempArt.getPeople3_name().equals(principal.getRealname()) && tempArt.getPeople3_email().equals(principal.getUsername()) && !one.equals(tempArt.getPeople3_sign()))
 				{
 					sign = UserRsa.sign(tempArt.getPlain_text(), principal.getPrivateKey());
 					tempArt.setPeople3_encrypt(sign);
@@ -1294,13 +1933,14 @@ public class IndexController {
 					System.out.println("사인3확인 결과 : "+ UserRsa.verifySignarue(tempArt.getPlain_text(),sign, principal.getPublicKey()));
 					tempArt.setPeople3_sign("1");
 					tempArt.setSign_count(tempArt.getSign_count()+1);
+					tempArt.setPeople3_time(time1);
 					//articleRepository.deleteById(tempArt.getId());
 					articleRepository.save(tempArt);
 				}
 				
 				//모두가 싸인을 완료했을 때
 				boolean signCheck = false;
-				String one="1";
+			
 				System.out.println("계약 인원수 : "+tempArt.getPeople_size());
 				switch(tempArt.getPeople_size())
 				{
@@ -1346,12 +1986,126 @@ public class IndexController {
 					{
 						customMailSender.gmailSend(tempArt,tempArt.getPeople3_email(),"result"+File.separator+tempArt.getSer_fileName());
 					}
+					
+					
+					
+					
+					
+					
+					//완료된 계약서 파일 해쉬
+					InputStream imageStream = new FileInputStream(fileService.getUpResultDir() +File.separator + tempArt.getSer_fileName());//
+					byte[] imageByteArray = IOUtils.toByteArray(imageStream);
+					imageStream.close();
+					
+					MessageDigest md = MessageDigest.getInstance("SHA-256");
+				    md.update(imageByteArray);
+				    
+				    
+				    StringBuilder builder = new StringBuilder();
+			        for (byte b: md.digest()) {
+			          builder.append(String.format("%02x", b));
+			        }
+			        tempArt.setResult_hash(""+builder.toString());
+
+				    System.out.println("해쉬값 : "+tempArt.getResult_hash());
+				    articleRepository.save(tempArt);
+
+					
 				}
 
 			}
-		return "redirect:/";//홈페이지로 보냄
+		return "redirect:/user/myPage";//홈페이지로 보냄
 	}
 	
+	@PostMapping("/user/sign2")
+	public String userSign2(MessageForm message, String title, Timestamp create_time ) throws Exception
+	{
+		System.out.println("서명 합성하기");
+		//유저 정보 가져오기
+		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		Copyright tempArt = copyrightRepository.findByPapername(title);
+		
+		
+		if(tempArt!=null && tempArt.getCreateDate().toString().equals(create_time.toString()))//해당 이름의 계약서가 있고, 계약서 생성시기도 일치할 때 
+			{
+				System.out.println("계약서 찾음");
+				String sign=null;
+				
+				System.out.println("원문 : " +tempArt.getPlain_text());
+				
+				
+				SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
+				Date time = new Date();
+				String time1 = format1.format(time);
+				
+				String one="1";
+				
+				if(tempArt.getPeople1_name().equals(principal.getRealname()) && tempArt.getPeople1_email().equals(principal.getUsername())  && !one.equals(tempArt.getPeople1_sign()))
+				{
+					sign = UserRsa.sign(tempArt.getPlain_text(), principal.getPrivateKey());
+					tempArt.setPeople1_encrypt(sign);
+					//System.out.println("사인1 : "+sign);
+					System.out.println("사인1확인 결과 : "+ UserRsa.verifySignarue(tempArt.getPlain_text(),sign, principal.getPublicKey()));
+					tempArt.setPeople1_sign("1");
+					tempArt.setSign_count(tempArt.getSign_count()+1);
+					tempArt.setPeople1_time(time1);
+					//articleRepository.deleteById(tempArt.getId());
+					copyrightRepository.save(tempArt);
+				}
+
+				//모두가 싸인을 완료했을 때
+				boolean signCheck = false;
+			
+				System.out.println("계약 인원수 : "+tempArt.getPeople_size());
+				
+					if(one.equals(tempArt.getPeople1_sign()))
+					{
+						System.out.println("1인 싸인 완료");
+						signCheck = true;
+						
+					}
+					
+					
+				
+				
+				
+				if(signCheck)
+				{
+					//봐야할 파일 주소와 계약서 자료 넘기기
+					Imagetest.makeSignPage2(fileService.getUpDownloadDir(), tempArt);	
+					customMailSender2.gmailSend(tempArt,tempArt.getPeople1_email(),fileService.getUpResultDir()+File.separator+tempArt.getSer_fileName());
+					System.out.println("사인과 이미지 합성완료");
+					
+					
+					
+					
+					
+					
+					//완료된 계약서 파일 해쉬
+					InputStream imageStream = new FileInputStream(fileService.getUpResultDir() +File.separator + tempArt.getSer_fileName());//
+					byte[] imageByteArray = IOUtils.toByteArray(imageStream);
+					imageStream.close();
+					
+					MessageDigest md = MessageDigest.getInstance("SHA-256");
+				    md.update(imageByteArray);
+				    
+				    
+				    StringBuilder builder = new StringBuilder();
+			        for (byte b: md.digest()) {
+			          builder.append(String.format("%02x", b));
+			        }
+			        tempArt.setResult_hash(""+builder.toString());
+
+				    System.out.println("해쉬값 : "+tempArt.getResult_hash());
+				    copyrightRepository.save(tempArt);
+
+					
+				}
+
+			}
+		return "redirect:/user/myPage";//홈페이지로 보냄
+	}
 	
 	//input파일안 계약서 다운로드
 	@PostMapping("/user/signedDownload")
@@ -1401,11 +2155,106 @@ public class IndexController {
 
 	}
 	
+	
+	@PostMapping("/user/signedDownload2")
+	public void signedDownload2(String title,Timestamp create_time , HttpServletResponse response)
+	{
+		Copyright tempArt = copyrightRepository.findByPapername(title);
+		
+		
+		if(tempArt!=null && tempArt.getCreateDate().toString().equals(create_time.toString()))//해당 이름의 계약서가 있고, 계약서 생성시기도 일치할 때 
+			{
+
+			 BufferedOutputStream out = null;
+		     InputStream in = null;
+			
+		     System.out.println("서명 이전 다운로드 : "+tempArt.getOrig_name());
+			 try {
+				 //한글제목은 encoding해서 보내줘야함
+				 String encordedFilename = URLEncoder.encode(tempArt.getOrig_name(),"UTF-8").replace("+", "%20");
+				 response.setHeader("Content-Disposition",   "attachment;filename=" + encordedFilename + ";filename*= UTF-8''" + encordedFilename);
+				 response.setContentType("image/*");
+				 //response.setHeader("Content-Disposition", "inline;filename="+tempArt.getSer_fileName());
+		            File file = new File(fileService.getUpDownloadDir()+File.separator+tempArt.getSer_fileName());//upDownloadDir로 바꿀 것
+		            if(file.exists()) {
+		                in = new FileInputStream(file);
+		                out = new BufferedOutputStream(response.getOutputStream());
+		                int len;
+		                byte[] buf = new byte[1024];
+		                while ((len = in.read(buf)) > 0) {
+		                    out.write(buf, 0, len);
+		                }
+		            }
+		            
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        } finally {
+		        	try {
+		            if(out != null) { out.flush();}
+		            if(out != null) { out.close();}
+		            if(out != null) { in.close();}
+		        	}catch(Exception e)
+		        	{
+		        		e.printStackTrace();
+		        	}
+		        }
+		 
+		}
+
+	}
+	
 	//사인 완료된 result 파일안의 계약서 다운로드
 	@PostMapping("/user/completesignedDownload")
 	public void completesignedDownload(String title,Timestamp create_time , HttpServletResponse response)
 	{
 		Article tempArt = articleRepository.findByPapername(title);
+		
+		
+		if(tempArt!=null && tempArt.getCreateDate().toString().equals(create_time.toString()))//해당 이름의 계약서가 있고, 계약서 생성시기도 일치할 때 
+			{
+
+			 BufferedOutputStream out = null;
+		     InputStream in = null;
+			
+		     System.out.println("서명 이전 다운로드 : "+tempArt.getOrig_name());
+			 try {
+				 //한글제목은 encoding해서 보내줘야함
+				 String encordedFilename = URLEncoder.encode(tempArt.getOrig_name(),"UTF-8").replace("+", "%20");
+				 response.setHeader("Content-Disposition",   "attachment;filename=" + encordedFilename + ";filename*= UTF-8''" + encordedFilename);
+				 response.setContentType("image/*");
+				 //response.setHeader("Content-Disposition", "inline;filename="+tempArt.getSer_fileName());
+		            File file = new File(fileService.getUpResultDir()+File.separator+tempArt.getSer_fileName());//upDownloadDir로 바꿀 것
+		            if(file.exists()) {
+		                in = new FileInputStream(file);
+		                out = new BufferedOutputStream(response.getOutputStream());
+		                int len;
+		                byte[] buf = new byte[1024];
+		                while ((len = in.read(buf)) > 0) {
+		                    out.write(buf, 0, len);
+		                }
+		            }
+		            
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        } finally {
+		        	try {
+		            if(out != null) { out.flush();}
+		            if(out != null) { out.close();}
+		            if(out != null) { in.close();}
+		        	}catch(Exception e)
+		        	{
+		        		e.printStackTrace();
+		        	}
+		        }
+		 
+		}
+
+	}
+	
+	@PostMapping("/user/completesignedDownload2")
+	public void completesignedDownload2(String title,Timestamp create_time , HttpServletResponse response)
+	{
+		Copyright tempArt = copyrightRepository.findByPapername(title);
 		
 		
 		if(tempArt!=null && tempArt.getCreateDate().toString().equals(create_time.toString()))//해당 이름의 계약서가 있고, 계약서 생성시기도 일치할 때 
@@ -1564,7 +2413,7 @@ public class IndexController {
 	
 	
 	@PostMapping("/join")//GetMapping이 post지원 안해준다해서
-	public String join(User user, HttpServletRequest request, HttpServletResponse response, @RequestParam("uploadFile") MultipartFile file) throws Exception
+	public String join(User user, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		//String test="평문";
 			user.setRole("ROLE_USER");
@@ -1594,14 +2443,14 @@ public class IndexController {
 			
 			
 			
-			user.setSignname(user.getUsername()+file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf(".")));
+			//user.setSignname(user.getUsername()+file.getOriginalFilename());
 			
 			userRepository.save(user);//회원가입됨
 			
 
 			
 			//사인 이미지 업로드
-			fileService.fileUpload(file,user.getSignname());
+			//fileService.fileUpload(file,user.getSignname());
 	
 			
 			return "redirect:/loginForm";//redirect는 loginForm함수 호출

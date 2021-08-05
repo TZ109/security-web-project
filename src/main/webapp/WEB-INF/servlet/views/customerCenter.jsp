@@ -36,8 +36,7 @@
 
 								<ul class="button_layer" style="display: flex;list-style : none; padding-left : 0;">
 									
-									<li> <a class="btn5" onclick="test()" style="cursor:pointer"> 계약서 / 서명 만들기 </a>
-									</li>
+									
 									<li> <a onclick="location.href='/board'" class="btn5" style="cursor: pointer"> 자료실
 										</a> </li>
 									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="cursor: pointer"> 고객센터

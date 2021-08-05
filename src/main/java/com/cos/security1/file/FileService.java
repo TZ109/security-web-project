@@ -100,10 +100,10 @@ public class FileService {
     	//사용자 서명 이미지 업로드
     	else
     	{
-    		
+    		/*
     		if(extension.length()>=1)
     			serverFilename =user_sign_name+"."+extension;
-    		else
+    		else*/
     			serverFilename=user_sign_name;
     		
     		
