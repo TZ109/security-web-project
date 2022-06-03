@@ -37,26 +37,26 @@
 								<ul class="button_layer" style="display: flex;list-style : none; padding-left : 0;">
 									
 									
-									<li> <a onclick="location.href='/board'" class="btn5" style="cursor: pointer"> 자료실
+									<li> <a onclick="location.href='/board'" class="btn5" style="cursor: pointer;white-space: nowrap;"> 자료실
 										</a> </li>
-									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="cursor: pointer"> 고객센터
+									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="cursor: pointer;white-space: nowrap;"> 고객센터
 										</a> </li>
 
 									<sec:authorize access="isAnonymous()">
 										<li> <a href="/joinForm" class="btn7"
-												style="cursor: pointer; text-decoration:none"> 회원가입 </a> </li>
+												style="cursor: pointer; text-decoration:none;white-space: nowrap;"> 회원가입 </a> </li>
 										<li> <a href="/loginForm" class="btn6"
-												style="cursor: pointer; text-decoration:none"> 로그인 </a> </li>
+												style="cursor: pointer; text-decoration:none;white-space: nowrap;"> 로그인 </a> </li>
 									</sec:authorize>
 
 									<sec:authorize access="isAuthenticated()">
-										<li style="margin-left:14px; margin-right:6px;"><a href="/user/myPage" class="btn5" style="cursor: pointer">마이페이지</a></li>
+										<li style="margin-left:14px; margin-right:6px;"><a href="/user/myPage" class="btn5" style="text-decoration:none;cursor: pointer;white-space: nowrap;">마이페이지</a></li>
 										<li>
 											<form action="/logout" method="POST">
 												<input type="hidden" name="${_csrf.parameterName}"
 													value="${_csrf.token}" />
 												<a class="btn6"><button type="submit" class="btn6_sub"
-														style="cursor: pointer; text-decoration:none;">로그아웃</button>
+														style="cursor: pointer; text-decoration:none;white-space: nowrap;">로그아웃</button>
 												</a>
 											</form>
 										</li>
@@ -561,39 +561,41 @@
 
 
 						</div>
+
+						<div style="position:relative;top:140px; width:1100px; margin-left: auto; margin-right: auto;">
 						<div
-						style="position:absolute;top: 143px;left: 328px;text-align: left;font: normal normal bold 48px/64px Noto Sans KR;letter-spacing: -1.2px;color: #191919;opacity: 1;">
+						style="position:relative;width:90%;margin-left:auto;margin-right:auto; text-align: left;font: normal normal bold 48px/64px Noto Sans KR;letter-spacing: -1.2px;color: #191919;opacity: 1;">
 						고객센터</div>
-						<div style="position: absolute;top: 222px;left: 320px;">
-							<hr style="height: 5px;width: 1280px;border-radius: 10px; background-color: #245AE3;">
+						<div>
+							<hr style="height: 5px;width: 95%;border-radius: 10px; background-color: #245AE3;">
 						</div>
 						<div
-						style="position: absolute;top: 242px;left: 320px;text-align: left;font: normal normal normal 17px/23px Noto Sans KR;letter-spacing: -0.42px;color: #000000;opacity: 1;">
+						style="width:90%;margin-left:auto;margin-right:auto; margin-top:30px;text-align: left;font: normal normal normal 17px/23px Noto Sans KR;letter-spacing: -0.42px;color: #000000;opacity: 1;">
 						바로날인 서비스 이용에 도움을 드립니다. </div>
 						
-						  <div class="col-lg-12" style="position: absolute;width:100px;top: 360px;left: 1380px;text-align: right;text-align: end; padding:20px 40px;">
-                                <a href="/user/editor"><button type="submit" class="site-btn">문의 업로드</button></a>
+						  <div class="col-lg-12" style="position: relative;width:90%;text-align: right;margin-left: auto;margin-right: auto;margin-bottom: 20px;">
+                                <a href="/user/editor"><button type="submit" class="site-btn" style="background-color: #245AE3;color:white;padding:7px 15px;border:none;cursor:pointer;border-radius: 10px;">문의 업로드</button></a>
                             </div>
 						
-						<div style="position: absolute;top: 412px;left: 396px;">
-							<hr style="height: 2px;width: 1127px;background-color: #191919;">
+						<div style="position: relative;width:90%;margin-left: auto;margin-right: auto;">
+							<hr style="height: 1px;width: 100%;background-color: #191919;">
 						</div>
 
-						<div style="position: absolute;top: 427px;">
+						<div style="position: relative;display:flex;width:90%;margin-left: auto;margin-right: auto;">
 							<div class="cus_title"
-								style="left:447px;width:100px;">
+								style="position: relative;width:10%;text-align: center;">
 								<p>No</p></div>
 							<div class="cus_title"
-								style="left:915px;width:100px;">
+								style="position: relative;width:54%; padding-right: 5%; padding-left: 11%;text-align: center;">
 								<p>제목</p>
 							</div>
 							<div class="cus_title"
-								style="left:1267px;width:100px;">
+								style="position: relative;width:20%;text-align: center;">
 								<p>작성자</p>
 							</div>
 						</div>
-						<div style="position: absolute;top: 480px;left: 396px;">
-							<hr style="height: 1px;width: 1127px;background-color: #191919;">
+						<div style="position: relative;width:90%;margin-left: auto;margin-right: auto;">
+							<hr style="height: 1px;width: 100%;background-color: #191919;">
 						<!-- 여기가 실제 문의사항 부분!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
 						<script>
                      	
@@ -602,38 +604,41 @@
                                         	
                                         	var pass = prompt('비밀번호를 입력하세요','');  
                                         	
-                                        	var alldata = {"id": id, "pass":pass};
+                                        	if(pass.length>=1)
+                                        		{
+                                        		var alldata = {"id": id, "pass":pass};
 
-                                        	
-                                        	$.ajax(
-                                        	{
-                                        				async: true,
-                                        				type : 'GET',
-                                        				datatype: 'json',
-                                        				data: alldata,
-                                        				url: "/checkCustomerPass",
-                                        				contentType: "application/json; charset=UTF-8",
-                                        				
-                                        				success: function(success)
-                                        				{
-                                        					if(success=='success')
-                                        						{
-                                        						alert('확인되었습니다.');
-                                        						document.getElementById('id_input').value = id;
-                                        						$("#submitpost").submit();
-                                        						}
-                                        					else
-                                        						{
-                                        						alert('비밀번호가 일치하지 않습니다.');
-                                        						}
-                                        				},
-                                        	
-                                        				error: function()
-                                        				{
-                                        					alert('Error');
-                                        				}
-                                        				
-                                        			});
+                                            	
+                                            	$.ajax(
+                                            	{
+                                            				async: true,
+                                            				type : 'GET',
+                                            				datatype: 'json',
+                                            				data: alldata,
+                                            				url: "/checkCustomerPass",
+                                            				contentType: "application/json; charset=UTF-8",
+                                            				
+                                            				success: function(success)
+                                            				{
+                                            					if(success=='success')
+                                            						{
+                                            						alert('확인되었습니다.');
+                                            						document.getElementById('id_input').value = id;
+                                            						$("#submitpost").submit();
+                                            						}
+                                            					else
+                                            						{
+                                            						alert('비밀번호가 일치하지 않습니다.');
+                                            						}
+                                            				},
+                                            	
+                                            				error: function()
+                                            				{
+                                            					alert('Error');
+                                            				}
+                                            				
+                                            			});
+                                        		}
                                         	
                                         		
                                           }
@@ -655,9 +660,10 @@
                                         
 
 			                             
-			                             <div>
+			                             <div style="position:relative;width:100%;">
 											<!-- 바로 아랫 줄 top 수정 +70px-->
-											<div class="cus_body" style="top:${adder}px;left:47px;width:100px;">
+											<div style="display: flex;width:100%;">
+											<div class="cus_body" style="position:relative;width:10%;text-align: center;">
 												<p>${id_num}</p>
 											</div>
 											
@@ -666,36 +672,70 @@
 
 	                                       	 
 	                                       	 <!-- 바로 아랫 줄 top 수정 +70px-->
-											<div class="cus_body" style="top:${adder + 17}px;left:163px;width:13px;height:12px;">
+											<div class="cus_body" style="position:relative;display: flex; align-items:center; justify-content: space-between;width:60%;padding-left: 5%; padding-right: 5%;">
+											<div style="width:10%;text-align:center;height:12px;">
 												<img src="/img/lock.svg" alt="잠금">
 											</div>
 											<!-- 바로 아랫 줄 top 수정 +70px-->
-											<div class="cus_body" style="top:${adder}px;left:214px;width:400px;">
+											<div class="cus_body" style="position:relative;width: 90%; text-align: center;">
+											
+											<sec:authorize access="isAnonymous()">
+												<p><a onclick="secretpost(`${data.id}`)" class="btn5"> 비밀글입니다.</a>
+													
+													
+														<c:if test="${!empty data.admincomment}">
+															<span id="admin_comment${id_num}" style="color:#245AE3; font:normal normal bold 14px/20px Noto Sans KR">+답변
+															</span>
+														</c:if> 
+													</p>
+											</sec:authorize>
+											
+											<sec:authorize access="isAuthenticated()">
+							                    <sec:authentication property="principal" var="principal" />
+							                  
+							                  <c:choose>
+												<c:when test="${principal.role eq 'ROLE_ADMIN'}">
+													<p><a onclick="post(`${data.id}`)" class="btn5"> 비밀글입니다.</a>
+													
+													
+														<c:if test="${!empty data.admincomment}">
+															<span id="admin_comment${id_num}" style="color:#245AE3; font:normal normal bold 14px/20px Noto Sans KR">+답변
+															</span>
+														</c:if> 
+													</p>
+												</c:when>
+												
+												<c:otherwise>
 												<p><a onclick="secretpost(`${data.id}`)" class="btn5"> 비밀글입니다.</a>
 												
-												<c:if test="${!empty data.admincomment}">
-													<span id="admin_comment${id_num}" style="color:#245AE3; font:normal normal bold 14px/20px Noto Sans KR">+답변
-													</span>
-												</c:if>
+												
+													<c:if test="${!empty data.admincomment}">
+														<span id="admin_comment${id_num}" style="color:#245AE3; font:normal normal bold 14px/20px Noto Sans KR">+답변
+														</span>
+													</c:if> 
 												</p>
+												</c:otherwise>
+											</c:choose>
+												
+										</sec:authorize>
 											</div>
+											</div>	
 	                                        </c:when>
 	                                        
 	                                        <c:otherwise>
-	                                        <div class="cus_body" style="visibility:hidden;top:${adder + 17}px;left:163px;width:13px;height:12px;">
-												<img src="/img/lock.svg" alt="잠금">
-											</div>
+											<div class="cus_body" style="position:relative;display: flex; justify-content: space-between;width:60%;padding-left: 5%; padding-right: 5%;">
+	                                      
 											<!-- 바로 아랫 줄 top 수정 +70px-->
-											<div class="cus_body" style="top:${adder}px;left:214px;width:400px;">
-												<p><a onclick="post(`${data.id}`)" class="btn5"> ${data.title}</a>
-												
+											<div class="cus_body" style="position:relative; margin-left:10%;width: 90%; text-align: center;">
+												<p><a onclick="post(`${data.id}`)" class="btn5" > ${data.title}</a>
 												<c:if test="${!empty data.admincomment}">
 													<span id="admin_comment${id_num}" style="color:#245AE3; font:normal normal bold 14px/20px Noto Sans KR">+답변
 													</span>
+								
 												</c:if>
 												</p>
 											</div>
-
+											</div>
 
 											
 											
@@ -711,19 +751,20 @@
 											
 											
 											<!-- 바로 아랫줄 top 수정 +70px-->
-											<div class="cus_body" style="top:${adder}px;left:875px;width:400px;">
+											<div class="cus_body" style="position:relative; width:20%;text-align:center;">
 												<p>${data.realname}</p>
 											</div>
+										</div>
 											<!-- 바로 아랫줄 top 수정 +70px-->
-											<div style="position: absolute;top: ${adder + 55}px;">
-												<hr style="height: 1px;width: 1127px;background-color: #191919;">
+											<div style="width:100%;">
+												<hr style="height: 1px;width: 100%;background-color: #191919;">
 											</div>
 																	
 										</div>
                                          
                                        
                               		<c:set var="id_num" value="${id_num + 1}"/>
-                              		<c:set var="adder" value="${adder+70}"/>
+                              		
                                 </c:forEach>
 					
 						
@@ -736,7 +777,7 @@
 							<!-- 가장 마지막 기준 top에 +140px ex)현재 top: 350px; 기준 +140px-->
 							
 							
-							<div style="position: absolute; top:490px; left:460px; display:flex; justify-content:space-around;">
+							<div style="margin-top:30px;position: relative;display:flex; justify-content:space-around;">
 							<c:if test="${!postlist.first}">
 
 		<a style="text-decoration: none;color: #191919;" href="?page=${postlist.number-1}"><span style="margin-right:30px;font-size:18px;">이전</span></a>
@@ -784,7 +825,7 @@
 
 						
 						
-
+							</div>
 
 
 

@@ -3,7 +3,9 @@
 	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 		<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
 			<%@ page import="org.springframework.security.core.Authentication" %>
-
+				<%@taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+				
+				
 				<!DOCTYPE html>
 				<html>
 
@@ -13,7 +15,7 @@
 					<meta name="copyright" content="Copyright (c) 2021 VANE company All rights reserved">
 					<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 					<link rel="stylesheet" type="text/css" href="/css/style.css?ver=1">
-					<link rel="stylesheet" type="text/css" href="/css/style_documentpage2.css?ver=1">
+					<link rel="stylesheet" type="text/css" href="/css/style_documentpage3.css?ver=1">
 					<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 					<link rel="stylesheet" type="text/css" href="/css/style.css?ver=5">
@@ -156,13 +158,14 @@
 										<img src="/img/sign_example.png" width=180px />
 										<br><br><br>
 									</div>
-
+									<canvas id="sign" width="429" height="201"
+											style="border: 1px solid #767676; border-radius: 30px;"></canvas><br>
+										<br>
+	
 									<form action="/user/changesign2" method="post" id="changingSign">
 
 										<input type="file" style="display:none" name="uploadFile">
-										<canvas id="sign" width="429" height="201"
-											style="border: 1px solid #767676; border-radius: 30px;"></canvas><br>
-										<br>
+										
 									</form>
 
 
@@ -228,14 +231,14 @@
 													document.getElementById("input_sign_ancher").onclick = null;
 													document.getElementById("background_gray").style.display = "none";
 													document.getElementById("black_div").style.display = "none";
-													alert('서명 변경성공');
+													alert('서명 등록성공');
 												}
 
 
 
 											},
 											error: function () {
-												alert('서명 변경실패');
+												alert('서명 등록실패');
 											}
 
 										});
@@ -264,7 +267,8 @@
 										y: -1
 									};
 									var canvas, ctx;
-									window.onload = function () {
+									
+										console.log('실행됨')
 										var valid = $('#is_valid_user').val();
 
 										if (valid == -1) {
@@ -283,7 +287,8 @@
 										canvas.addEventListener("touchmove", listener);
 										canvas.addEventListener("touchend", listener);
 										canvas.addEventListener("touchcancel", listener);
-									}
+										
+									
 
 									function listener(event) {
 										if (document.getElementById('draw_sign_layer').style.display == "block") {
@@ -585,12 +590,12 @@
 						</script>
 
 
-						<div id="Root" style="height:200%">
+						<div id="Root" style="height:100%">
 
 							<div id="controller_background_gray">
 								<div id="title_background">
 									<br>
-									<input id="temp_title" type="text" name="title" placeholder="계약서 제목을 입력해주세요."
+									<input id="temp_title" type="text" name="title" placeholder="제목 입력"
 										maxlength="20"
 										style="font: normal normal bold 25px/15px Noto Sans KR;font-size:30px;text-align: center;border:none;width:800px;border-right:0px; border-top:0px; border-left:0px; border-bottom:0px;"
 										size="20">
@@ -602,7 +607,7 @@
 									<div style="font: normal normal normal 16px/30px Noto Sans KR;margin-bottom:10px;">
 										</div>
 									<br>	
-									<input id="btn1" type="button"  value="저작권 등록" class="button">
+									<input id="btn1" type="button"  value="문서 등록" class="button" style="background-color: #9a9a9a;">
 									<br>
 									<script type="text/javascript">
 										//2명,3명의 button을 누르면 도장 이미지 추가
@@ -626,7 +631,7 @@
 
 
 											if (Num == 1) {
-												document.getElementById("first_Sign_View").style.display = "block";
+												//document.getElementById("first_Sign_View").style.display = "block";
 											}
 											else if (Num == 2) {
 												document.getElementById("first_Sign_View").style.display = "block";
@@ -647,13 +652,68 @@
 										}
 									</script>
 									<br>
+									
+									
+									
 									<div id="input" style="display:flex;justify-content: center;visibility:hidden">
 										<input id="input_doc" type="image" src="/img/document_on.png"
-											style="" onclick="click_inputfile(this)" />
-										
+											style="margin-right:7px" onclick="click_inputfile(this)" />
+										<a onclick="signfile_upload();" id="input_sign_ancher"><img src="/img/sign_upload.png" width=120px
+													style="cursor:pointer" id="input_sign"></a>
+													
+										<input type="file" style="display:none" id="signupfile" onchange="upload_sign2(this.files)">
+											
+											
+											<script type="text/javascript">
+												function signfile_upload()
+												{
+													document.getElementById('signupfile').click();
+												}
+											
+												function upload_sign2(files){
+														
+													
+													    var file = files[0];	// Blob 생성
+
+													    var formdata = new FormData();
+													    formdata.append("file", file);
+													    formdata.append("title",`${paper_name}`);
+													    formdata.append("create_time",`${create_date}`);
+													    
+													    if(file!=undefined)
+													    {
+													    	$.ajax({
+														    	async : true, 
+														        type : 'POST',
+														        url : '/user/changesign',
+														        data : formdata,
+														        dataType: "json",
+														        processData : false,	// data 파라미터 강제 string 변환 방지!!
+														      	contentType : false,	// application/x-www-form-urlencoded; 방지!!
+														        success : function (result) {
+														           if(result==0)
+														        	{
+														        	   
+																		alert('서명 불러오기 성공');
+																		del_add_img_layer();
+																		add_img_layer('sign',0);
+														        	}
+														        },
+														        error : function()
+														        {
+														        	alert('서명 변경실패');
+														        }
+														        
+															});
+													    }
+													    
+													
+												}
+											</script>			
 									</div>
-
-
+									
+		
+									
 									<br>
 
 
@@ -874,15 +934,18 @@
 													placeholder="이메일" name="email3" size="20"></div>
 											<br>
 										</div><br>
-
+										<br><br>
 										<div id="other_View" style="display:none">
 											<p style="font: normal normal bold 15px/15px Noto Sans KR;">페이지 이동</p>
-											<input type="button" value="<" onclick="prevImg()" class="button" />
-											<input type="button" value=">" onclick="nextImg()" class="button" /><br>
 											<br>
-											<input id="btnout" type="button" onclick="location.href='/'" value="취소"
+											<input type="button" style="padding-top:7px;padding-bottom: 7px;padding-left: 20px;padding-right: 20px;" value="<" onclick="prevImg()" class="button" />
+											<input type="button" style="padding-top:7px;padding-bottom: 7px;padding-left: 20px;padding-right: 20px;" value=">" onclick="nextImg()" class="button" /><br>
+											<br>
+											<br>
+											<br>
+											<input id="btnout" style="padding-top:7px;padding-bottom: 7px;padding-left: 20px;padding-right: 20px;" type="button" onclick="location.href='/'" value="취소"
 												class="button">
-											<input id="btnin" type="button" value="승인 요청" onclick="sub_btnin()"
+											<input id="btnin"  style="padding-top:7px;padding-bottom: 7px;padding-left: 20px;padding-right: 20px;" type="button" value="저장하기" onclick="sub_btnin()"
 												class="button">
 											<input style="display:none;" multiple="multiple" type="file"
 												name="uploadFile" id="inputfile" onchange="FiletoImg(this.files)"
@@ -902,87 +965,11 @@
 											function sub_btnin() {
 
 												if ($('#temp_title').val() == '') {
-													alert('계약서 제목을 입력하십시오.');
+													alert('문서 제목을 입력하십시오.');
 													return false;
 												}
 
-												var n1 = document.getElementById('name1').value;
-												var n2 = document.getElementById('name2').value;
-												var n3 = document.getElementById('name3').value;
-
-
-
-
-												var e1 = document.getElementById('email1').value;
-												var e2 = document.getElementById('email2').value;
-												var e3 = document.getElementById('email3').value;
-
-
-												switch (Num) {
-													case 1:
-														if (n1 == '') {
-
-															alert('빈칸에 이름을 입력하십시오.');
-															return false;
-														}
-														break;
-													case 2:
-														if (!n1 || !n2) {
-															alert('빈칸에 이름을 입력하십시오.');
-															return false;
-														}
-														break;
-													case 3:
-														if (!n1 || !n2 || !n3) {
-															alert('빈칸에 이름을 입력하십시오.');
-															return false;
-														}
-												}
-
-												switch (Num) {
-													case 1:
-														if (!e1) {
-															alert('빈칸에 이메일을 입력하십시오.');
-															return false;
-														}
-														break;
-													case 2:
-														if (!e1 || !e2) {
-															alert('빈칸에 이메일을 입력하십시오.');
-															return false;
-														}
-														break;
-													case 3:
-														if (!e1 || !e2 || !e3) {
-															alert('빈칸에 이메일을 입력하십시오.');
-															return false;
-														}
-												}
-
-
-
-												if (Num == 2) {
-													if (e1 == e2) {
-														alert('이메일을 중복하여 사용할 수 없습니다.');
-														return false;
-													}
-												}
-
-												if (Num == 3) {
-													if (e1 == e2) {
-														alert('이메일을 중복하여 사용할 수 없습니다.');
-														return false;
-													}
-													if (e1 == e3) {
-														alert('이메일을 중복하여 사용할 수 없습니다.');
-														return false;
-													}
-													if (e3 == e2) {
-														alert('이메일을 중복하여 사용할 수 없습니다.');
-														return false;
-													}
-												}
-	
+												
 												var p1_result = document.getElementById("p1_coordinate").value;
 												var p2_result = document.getElementById("p2_coordinate").value;
 												var p3_result = document.getElementById("p3_coordinate").value;
@@ -1005,13 +992,39 @@
 												return false;
 												}
 												
-												alert('신청되었습니다.');
+												
+												$.ajax({
+													async:true,
+													type:"get",
+													dataType:"json",
+													url: "/user/checksign",
+													success: function(result)
+													{
+														if(result==-1)
+															{
+															alert('서명파일이 존재하지 않습니다.\n서명을 생성해 주십시오.');
+															}
+														
+														else
+															{
+															alert('저장 되었습니다.');
 
-												$('#sign_title').val($('#temp_title').val());
+															$('#sign_title').val($('#temp_title').val());
 
 
-												//server_file=document.getElementById("inputfile");
-												$('#submit_form').submit();
+															//server_file=document.getElementById("inputfile");
+															$('#submit_form').submit();
+															}
+													},
+													error: function()
+													{
+														alert("error")
+													}
+													
+													
+												});
+												
+												
 											}
 
 
@@ -1138,25 +1151,11 @@
 								</div>
 
 
-								<div id="remote_1" style="display:flex;flex-direction:column;justify-content:center;">
-									<div id="init" style="display:none;flex-direction:column;align-items: center;justify-content:center;">
-
-										
-										<br><input type="button" style="width:auto" value="갑 서명 더하기"
-										onclick="add_img_layer('sign',0); this.onclick=null;"  class="button" /><br>
-										<br><input type="button" id="plus2" style="width:auto;visibility: hidden;"
-											value="을 서명 더하기" onclick="add_img_layer('sign',1); this.onclick=null;"  class="button" /><br>
-										<br><input type="button" id="plus3" style="width:auto;visibility: hidden;"
-											value="병 서명 더하기" onclick="add_img_layer('sign',2); this.onclick=null;"  class="button" /><br>
-
-									</div>
-								</div>
-
 
 
 								<script type="text/javascript">
 									//이미지 레이어 추가하기
-									var stamp = [[-1, -1], [-1, -1], [-1, -1]];
+									var stamp = [[600, 20], [-1, -1], [-1, -1]];
 									var stamp_index = -1;
 									function print_console() {
 										for (var i = 0; i < 3; i++) {
@@ -1164,12 +1163,15 @@
 										}
 									}
 									function add_img_layer(e, s_index) {
-									
+										
 										stamp_index = s_index;
 										var mysign; //들어갈 싸인
 										switch(stamp_index) {
 											case 0: //갑 싸인
-												mysign = "/img/temp/참여자1사인.png";
+												console.log("stamp1 : "+stamp[0][0]+", "+stamp[0][1])
+												stamp[0][0]=600;
+												stamp[0][1]=20;
+												mysign = "<spring:url value='/showsignbysession'/>";
 												break; 
 											case 1: //을 싸인
 												mysign = "/img/temp/참여자2사인.png";
@@ -1181,12 +1183,12 @@
 												alert("스탬프 개수 에러");
 												break;
 										}
-										var y = window.scrollY;
+										var y = stamp[stamp_index][1];
 										console.log(e);
 										if (e == 'stamp')
-											var tmp = "<img id =\"" + add_file + "add_img" + "\" width=\"64\" style=\"image-rendering: auto; transform:scale(1); position:absolute; left:75px; top:" + y + "px; cursor:pointer; cursor:hand\" onmousedown=\"startDrag(event, this)\" border=\"0\">";
+											var tmp = "<img id =\"" + add_file + "add_img" + "\" width=\"64\" style=\"image-rendering: auto; transform:scale(1); position:absolute; left:"+stamp[stamp_index][0]+"px; top:" + y + "px; cursor:pointer; cursor:hand\" onmousedown=\"startDrag(event, this)\" border=\"0\">";
 										else
-											var tmp = "<img id =\"" + add_file + "add_img" + "\" width=\"128\" style=\"image-rendering: auto; transform:scale(1); position:absolute; left:75px; top:" + y + "px; cursor:pointer; cursor:hand\" onmousedown=\"startDrag(event, this)\" border=\"0\">";
+											var tmp = "<img id =\"" + add_file + "add_img" + "\" width=\"128\" style=\"image-rendering: auto; transform:scale(1); position:absolute; left:"+stamp[stamp_index][0]+"px; top:" + y + "px; cursor:pointer; cursor:hand\" onmousedown=\"startDrag(event, this)\" border=\"0\"  src=\"<spring:url value='/showsignbysession'/>\">";
 										console.log(tmp);
 										$("#controller").append(tmp);
 										tmp = "<input type=\"image\" id=\"" + add_file + "img" + "\" src= " + mysign + " >";
@@ -1198,7 +1200,7 @@
 										var _transform = imageDiv.style.transform;
 										imageDiv.style.setProperty("transform", "none");
 										var target_img = document.getElementById(name);
-										target_img.src = mysign;
+										//target_img.src = mysign;
 										target_img.index = stamp_index;
 										img.src = mysign;
 

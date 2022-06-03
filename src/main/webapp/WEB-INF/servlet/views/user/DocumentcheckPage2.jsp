@@ -950,43 +950,10 @@
 											</script>
 										</div>
 
-										<div id="controller_background_white">
-											<div id="capture_layer">
+										<div id="controller_background_white" style="padding:30px;box-sizing:border-box">
+											<iframe width="100%" height="100%" src="<spring:url value = '/pdfreview/${file_serverName}'/>">
+											</iframe>
 											
-											
-												<p name="title" style="margin-left:30px;font: normal normal bold 25px/15px Noto Sans KR;font-size:30px;text-align: center">
-
-												<div style="display:flex; justify-content: center;" >
-													<a id="serpdf" class="btn7" target="_blank" href="<spring:url value = '/pdfview/${file_serverName}'/>" style="padding:2%;width: auto; font: normal normal bold 25px/35px Noto Sans KR;font-size:30px;text-align: center;display:none" >${orig_Name}</a>
-												
-												
-												<img src="<spring:url value='/pdfview/${file_serverName}'/>" style="margin-top:20px;width:800px;display:none" id="serimage">
-												</div>
-												<input type="hidden" value="${is_pdf}" id="ispdf">
-												<script>
-												var pdf = document.getElementById('ispdf').value;
-												if(pdf=='')
-												{
-													document.getElementById('serimage').style.display= "block"; 
-													}
-												else
-												{
-													document.getElementById('serpdf').style.display= "block";
-													}
-												</script>
-											
-												</p>
-											
-											
-												<div id="controller" style="width:793px; height:1122px;">
-													<canvas id="first" width="793px" height="1122px"></canvas>
-													<script type="text/javascript">
-														//first의 canvas 설정
-														var $canvas = document.querySelector('#first');
-														$canvas.globalCompositeOperation = "source-over"; // 덮어 씌우기 가능
-													</script>
-												</div>
-											</div>
 										</div>
 
 

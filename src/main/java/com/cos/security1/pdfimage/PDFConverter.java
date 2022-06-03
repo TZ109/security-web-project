@@ -89,7 +89,7 @@ public class PDFConverter {
 			for (int i=0; i<pageCount; i++) { 
 				int pageNum = i + 1;
 				
-			    BufferedImage imageObj = pdfRenderer.renderImageWithDPI(i, 100, ImageType.RGB);
+			    BufferedImage imageObj = pdfRenderer.renderImageWithDPI(i, 300, ImageType.RGB);
 			    
 			    String imageFileName = fileNameOnly + "-" + pageNum + ".jpg";
 			    

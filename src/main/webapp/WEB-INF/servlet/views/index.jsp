@@ -4,7 +4,7 @@
 	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 		<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
 			<%@ page import="org.springframework.security.core.Authentication" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+			<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 
 				<!DOCTYPE html>
@@ -31,50 +31,49 @@
 									<img src="/img/google.png" style="height:80px" />
 								</a>
 
-								<ul class="button_layer" style="display: flex;list-style : none; padding-left : 0;">
+								<ul class="button_layer" style="display: flex; list-style : none; padding-left : 0;">
 									
-									<li> <a class="btn5" onclick="location.href='/user/copyright'" style="cursor:pointer"> 저작권 등록하기 </a>
+									<li> <a class="btn5" onclick="location.href='/paper'" style="font-size:12px;cursor:pointer;white-space: nowrap;"> 특허문서 요약 </a>
 									</li>
 									
-									<li> <a class="btn5" onclick="test()" style="cursor:pointer"> 계약서 / 서명 만들기 </a>
+									<li> <a class="btn5" onclick="location.href='/user/copyright'" style="font-size:12px;cursor:pointer;white-space: nowrap;"> 문서 등록하기 </a>
 									</li>
-									<li> <a onclick="location.href='/board'" class="btn5" style="cursor: pointer"> 자료실
+									
+									<li> <a class="btn5" onclick="test()" style="font-size:12px;cursor:pointer;white-space: nowrap;"> 계약서 / 서명 만들기 </a>
+									</li>
+									<li> <a onclick="location.href='/board'" class="btn5" style="font-size:12px;cursor: pointer;white-space: nowrap;"> 자료실
 										</a> </li>
-									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="cursor: pointer"> 고객센터
+									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="font-size:12px;cursor: pointer;white-space: nowrap;"> 고객센터
 										</a> </li>
 
 									<sec:authorize access="isAnonymous()">
-										<script>
+										<!-- <script>
 											function announce() {
 												window.open("/popup", "popup", "width=700, height=450,left=30,top=30");
 											}
-											announce();
-										</script>
+											announce(); 
+										</script>-->
 										<li> <a href="/joinForm" class="btn7"
-												style="cursor: pointer; text-decoration:none"> 회원가입 </a> </li>
+												style="cursor: pointer;font-size:12px; text-decoration:none;white-space: nowrap;"> 회원가입 </a> </li>
 										<li> <a href="/loginForm" class="btn6"
-												style="cursor: pointer; text-decoration:none"> 로그인 </a> </li>
+												style="cursor: pointer;font-size:12px; text-decoration:none;white-space: nowrap;"> 로그인 </a> </li>
 									</sec:authorize>
-
-
-									
-									
 
 									<sec:authorize access="isAuthenticated()">
 										<sec:authentication property="principal" var="principal" />
 										<c:if test="${principal.role eq 'ROLE_ADMIN'}">
-												<li style="margin-left:14px; margin-right:6px;"><a href="/user/adminPage" class="btn5" style="cursor: pointer">관리자페이지</a></li>
+												<li style="margin-left:14px; margin-right:6px;"><a href="/user/adminPage" class="btn5" style="font-size:12px;cursor: pointer;white-space: nowrap;">관리자페이지</a></li>
 					                            
 										</c:if>
 										
-										<li style="margin-left:14px; margin-right:6px;"><a href="/user/myPage" class="btn5" style="cursor: pointer">마이페이지</a></li>
-										<li><a class="btn5" onclick="test2()" style="cursor:pointer">일련번호</a></li>
+										<li style=""><a href="/user/myPage" class="btn5" style="font-size:12px;cursor: pointer;white-space: nowrap;text-decoration: none;">마이페이지</a></li>
+										<li><a class="btn5" onclick="test2()" style="font-size:12px;cursor:pointer;white-space: nowrap;">일련번호</a></li>
 										<li>
 											<form action="/logout" method="POST">
 												<input type="hidden" name="${_csrf.parameterName}"
 													value="${_csrf.token}" />
 												<a class="btn6"><button type="submit" class="btn6_sub"
-														style="cursor: pointer; text-decoration:none;">로그아웃</button>
+														style="cursor: pointer; font-size:12px;text-decoration:none;white-space: nowrap;">로그아웃</button>
 												</a>
 											</form>
 										</li>
@@ -140,13 +139,39 @@
 											<input type="hidden" name="serialnum" id="serial_num">
 											
 										</form>
-							
+							<form action="/user/copyrightcomplete" method="post" id="completed_submit2">
+											
+											<input type="hidden" name="serialnum" id="serial_num2">
+											
+										</form>
 							
 							
 							
 								<form method="post" action="#" id="checkIndex">
 									<div id = "sub_layer2">
 										<input type="text" name="index" maxlength="30" placeholder="번호" id="sub_layer2_input"><br/>
+										<script>
+    
+											// 숫자가 아닌 정규식
+											var replaceNotInt = /[^0-9]/gi;
+											
+											$(document).ready(function(){
+												
+												$("#sub_layer2_input").on("focusout", function() {
+													var x = $(this).val();
+													if (x.length > 0) {
+														if (x.match(replaceNotInt)) {
+														   x = x.replace(replaceNotInt, "");
+														}
+														$(this).val(x);
+													}
+												}).on("keyup", function() {
+													$(this).val($(this).val().replace(replaceNotInt, ""));
+												});
+										 
+											});
+										 
+										</script>
 									</div>
 									<div id = "sub_layer3">
 										<a onclick="serialtest()" class="sub_layer3_btn" style="cursor: pointer; text-decoration:none" id="submit_serial"> 확인 </a>
@@ -169,16 +194,22 @@
 												contentType: "application/json; charset=UTF-8",
 												success: function(res)
 											{
+													
 													if(res=='' || res==undefined )
 														{
 														alert("해당 일련번호에 접근할 수 없습니다.");
 														}
-													
+													else if(res.copyright){
+														document.getElementById('serial_num2').value = serial;
+														
+														alert('문서의 일련번호가 확인되었습니다');
+														$('#completed_submit2').submit();
+													}
 													else
 														{
 														document.getElementById('serial_num').value = serial;
 														
-														alert('일련번호가 확인되었습니다');
+														alert('계약서의 일련번호가 확인되었습니다');
 														$('#completed_submit1').submit();
 														
 														//var serial = "계약서 : "+res.paper+"\n계약파일명 : "+res.filename+"\n갑 : " + res.per1;
@@ -649,12 +680,12 @@
 
 						</div>
 
-						<div style="position:absolute;top:10px;">
+						<div>
 
 							<!-- <img src = "img/web1.jpg" style="width:100%; height:100%"/> -->
-							<img src="img/web1.jpg" style="width:100%;" />
-							<img src="img/web2.jpg" style="width:100%;" />
-							<img src="img/web3.png" style="width:100%;" />
+							<img src="img/web1.jpg" style="display:block;width:100%;" />
+							<img src="img/web2.png" style="display:block;width:100%;" />
+							<img src="img/web3.png" style="display:block;width:100%;" />
 						</div>
 				</body>
 

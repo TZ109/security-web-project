@@ -1,0 +1,10 @@
+pandas
+torch
+transformers
+pytorch-lightning
+streamlit
+
+transformers
+konlpy
+textrankr
+scipy

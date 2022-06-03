@@ -77,7 +77,7 @@
 									<img src="/img/google.png" style="height:80px" />
 								</a>
 
-								<div>쉽고 빠른 전자계약, 바로날인</div>
+								<div style="white-space: nowrap;">쉽고 빠른 전자계약, 바로날인</div>
 
 								<input type="hidden" value="${isValidUser}" id="is_valid_user">
 
@@ -268,9 +268,13 @@
 										var valid = $('#is_valid_user').val();
 
 										if (valid == -1) {
-											alert('회원가입하지 않은 인원이 있습니다.');
+											alert('회원가입하지 않은 인원이 있거나\n회원 정보가 일치하지 않습니다.');
 
 										}
+										else
+											{
+											window.open("/popup_document", "popup_document", "width=700, height=450,left=30,top=30");
+											}
 
 										canvas = document.getElementById("sign");
 										ctx = canvas.getContext("2d");
@@ -585,7 +589,7 @@
 						</script>
 
 
-						<div id="Root" style="height:200%">
+						<div id="Root" style="height:100%">
 
 							<div id="controller_background_gray">
 								<div id="title_background">
@@ -601,7 +605,7 @@
 									<br>
 									<div style="font: normal normal normal 16px/30px Noto Sans KR;margin-bottom:10px;">
 										서명 인원 선택</div>
-									<input id="btn1" type="button" onclick="getNum(1)" value="1명" class="button">
+									<input id="btn1" type="button" onclick="getNum(1)" value="1명" class="button" disabled style="display:none">
 									<input id="btn2" type="button" onclick="getNum(2)" value="2명" class="button">
 									<input id="btn3" type="button" onclick="getNum(3)" value="3명" class="button"><br>
 									<script type="text/javascript">
@@ -661,7 +665,7 @@
 									<br>
 									<div id="input" style="display:flex;justify-content: center;visibility:hidden">
 										<input id="input_doc" type="image" src="/img/document_on.png"
-											style="margin-right:15px;" onclick="click_inputfile(this)" />
+											style="" onclick="click_inputfile(this)" />
 										
 									</div>
 
@@ -848,12 +852,16 @@
 											<br>
 											<div style="text-align:center"> 갑 </div>
 											<br>
-											<div class="input_row"><input type="text" id="name1" placeholder="이름"
+											
+											<sec:authorize access="isAuthenticated()">
+												<sec:authentication property="principal" var="principal" />
+											<div class="input_row"><input type="text" id="name1" placeholder="이름" value="${principal.realname}" readonly
 													style="background-image:url(/img/이름뒷배경.png);background-size:auto;border:none;border-right:0px; border-top:0px; border-left:0px; border-bottom:0px;"
 													name="name1" size="20"></div>
-											<div class="input_row"><input type="text" id="email1"
+											<div class="input_row"><input type="text" id="email1" value="${principal.username}" readonly
 													style="background-image:url(/img/이메일뒷배경.png);background-size:auto;border:none;border-right:0px; border-top:0px; border-left:0px; border-bottom:0px;"
 													placeholder="이메일" name="email1" size="20"></div>
+											</sec:authorize>
 											<br>
 											
 										</div>
@@ -889,12 +897,13 @@
 
 										<div id="other_View" style="display:none">
 											<p style="font: normal normal bold 15px/15px Noto Sans KR;">페이지 이동</p>
-											<input type="button" value="<" onclick="prevImg()" class="button" />
-											<input type="button" value=">" onclick="nextImg()" class="button" /><br>
 											<br>
-											<input id="btnout" type="button" onclick="location.href='/'" value="취소"
+											<input type="button" style="padding-left: 20px;padding-right: 20px;padding-top: 7px;padding-bottom: 7px;" value="<" onclick="prevImg()" class="button" />
+											<input type="button" style="padding-left: 20px;padding-right: 20px;padding-top: 7px;padding-bottom: 7px;" value=">" onclick="nextImg()" class="button" /><br>
+											<br>
+											<input id="btnout" style="padding-left: 20px;padding-right: 20px;padding-top: 7px;padding-bottom: 7px;" type="button" onclick="location.href='/'" value="취소"
 												class="button">
-											<input id="btnin" type="button" value="승인 요청" onclick="sub_btnin()"
+											<input id="btnin" style="padding-left: 20px;padding-right: 20px;padding-top: 7px;padding-bottom: 7px;" type="button" value="승인 요청" onclick="sub_btnin()"
 												class="button">
 											<input style="display:none;" multiple="multiple" type="file"
 												name="uploadFile" id="inputfile" onchange="FiletoImg(this.files)"
@@ -1154,11 +1163,11 @@
 									<div id="init" style="display:none;flex-direction:column;align-items: center;justify-content:center;">
 
 										
-										<br><input type="button" style="width:auto" value="갑 서명 위치"
+										<br><input type="button" style="width:auto;padding-left: 20px;padding-right: 20px;padding-top: 7px;padding-bottom: 7px;" value="갑 서명 위치"
 										onclick="add_img_layer('sign',0); this.onclick=null;"  class="button" /><br>
-										<br><input type="button" id="plus2" style="width:auto;visibility: hidden;"
+										<br><input type="button" id="plus2" style="width:auto;visibility: hidden;padding-left: 20px;padding-right: 20px;padding-top: 7px;padding-bottom: 7px;"
 											value="을 서명 위치" onclick="add_img_layer('sign',1); this.onclick=null;"  class="button" /><br>
-										<br><input type="button" id="plus3" style="width:auto;visibility: hidden;"
+										<br><input type="button" id="plus3" style="width:auto;visibility: hidden;padding-left: 20px;padding-right: 20px;padding-top: 7px;padding-bottom: 7px;"
 											value="병 서명 위치" onclick="add_img_layer('sign',2); this.onclick=null;"  class="button" /><br>
 
 									</div>
@@ -1168,7 +1177,7 @@
 
 								<script type="text/javascript">
 									//이미지 레이어 추가하기
-									var stamp = [[-1, -1], [-1, -1], [-1, -1]];
+									var stamp = [[400, 10], [530, 10], [660, 10]];
 									var stamp_index = -1;
 									function print_console() {
 										for (var i = 0; i < 3; i++) {
@@ -1193,12 +1202,12 @@
 												alert("스탬프 개수 에러");
 												break;
 										}
-										var y = window.scrollY;
+										var y = stamp[stamp_index][1];
 										console.log(e);
 										if (e == 'stamp')
-											var tmp = "<img id =\"" + add_file + "add_img" + "\" width=\"64\" style=\"image-rendering: auto; transform:scale(1); position:absolute; left:75px; top:" + y + "px; cursor:pointer; cursor:hand\" onmousedown=\"startDrag(event, this)\" border=\"0\">";
+											var tmp = "<img id =\"" + add_file + "add_img" + "\" width=\"64\" style=\"image-rendering: auto; transform:scale(1); position:absolute; left:"+stamp[stamp_index][0]+"px; top:" + y + "px; cursor:pointer; cursor:hand\" onmousedown=\"startDrag(event, this)\" border=\"0\">";
 										else
-											var tmp = "<img id =\"" + add_file + "add_img" + "\" width=\"128\" style=\"image-rendering: auto; transform:scale(1); position:absolute; left:75px; top:" + y + "px; cursor:pointer; cursor:hand\" onmousedown=\"startDrag(event, this)\" border=\"0\">";
+											var tmp = "<img id =\"" + add_file + "add_img" + "\" width=\"128\" style=\"image-rendering: auto; transform:scale(1); position:absolute; left:"+stamp[stamp_index][0]+"px; top:" + y + "px; cursor:pointer; cursor:hand\" onmousedown=\"startDrag(event, this)\" border=\"0\">";
 										console.log(tmp);
 										$("#controller").append(tmp);
 										tmp = "<input type=\"image\" id=\"" + add_file + "img" + "\" src= " + mysign + " >";

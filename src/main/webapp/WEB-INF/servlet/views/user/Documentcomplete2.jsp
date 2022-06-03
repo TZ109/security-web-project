@@ -4,7 +4,7 @@
 		<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
 			<%@ page import="org.springframework.security.core.Authentication" %>
 				<%@taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-
+					<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 					<!DOCTYPE html>
 					<html>
 
@@ -610,12 +610,12 @@
 
 											<br>
 											<div id="back_View"
-												style="width:240px;height:380px;padding-top:20px;padding-bottom:20px;padding-left:20px;margin-left:20px;text-align: center;display:none;border-radius: 30px;background: #E8EAEF 0% 0% no-repeat padding-box;">
+												style="width:240px;height:400px;padding-top:20px;padding-bottom:20px;margin-left:30px;text-align: center;display:none;border-radius: 30px;background: #E8EAEF 0% 0% no-repeat padding-box;">
 
 
 
 												<div id="first_Sign_View"
-													style="display:none;text-align:center;background-image:url(/img/서명확인뒷배경.png);margin-right:20px;background-repeat:no-repeat;background-position:center center;background-size:230px 140px">
+													style="display:none;text-align:center;text-align:center;background-color: #ffffff;border-radius: 25px; width:210px;padding-top: 5px;padding-bottom: 5px;margin-left: 15px;">
 
 
 													<div
@@ -643,7 +643,7 @@
 
 
 												<div id="second_Sign_View"
-													style="display:none;text-align:center;background-image:url(/img/서명확인뒷배경.png);margin-right:20px;background-repeat:no-repeat;background-position:center center;background-size:230px 140px">
+													style="display:none;text-align:center;text-align:center;background-color: #ffffff;border-radius: 25px; width:210px;padding-top: 5px;padding-bottom: 5px;margin-left: 15px;">
 
 													<div
 														style="font: normal normal bold 15px/17px Noto Sans KR;padding-top:8px;padding-bottom:10px;">
@@ -666,7 +666,7 @@
 
 
 												<div id="third_Sign_View"
-													style="display:none;text-align:center;background-image:url(/img/서명확인뒷배경.png);margin-right:20px;background-repeat:no-repeat;background-position:center center;background-size:230px 140px">
+													style="display:none;text-align:center;text-align:center;background-color: #ffffff;border-radius: 25px; width:210px;padding-top: 5px;padding-bottom: 5px;margin-left: 15px;">
 
 													<div
 														style="font: normal normal bold 15px/17px Noto Sans KR;padding-top:8px;padding-bottom:10px;">
@@ -725,8 +725,24 @@
 												<br>
 												<br>	
 												<div style="display:flex;text-align: center;justify-content: center;">
+												
+												<sec:authorize access="isAuthenticated()">
+								                    	<sec:authentication property="principal" var="principal" />
+								                  
+														<c:if test="${principal.role eq 'ROLE_ADMIN' or principal.username eq person1_email}">
+												
+												<form method="post" action="/user/deletecopyright" id="delcopy">
+													<input type="hidden" name="serial" value="${uniquenum}">
+													<input id="btnout" type="button" onclick="$('#delcopy').submit();"
+														value="삭제" class="button"
+														style="font-size:20px;">
+												</form>
+												
+												</c:if>
+													</sec:authorize>
+												
 													<input id="btnout" type="button" onclick="location.href='/'"
-														value="확인" class="button"
+														value="나가기" class="button"
 														style="font-size:20px;">
 
 													
@@ -849,8 +865,6 @@
 												<p name="title" style="margin-left:30px;font: normal normal bold 25px/15px Noto Sans KR;font-size:30px;text-align: center">
 
 												<div style="display:flex; justify-content: center;" >
-													<a id="serpdf" class="btn7" target="_blank" href="<spring:url value = '/pdfreview/${file_serverName}'/>" style="padding:2%;width: auto; font: normal normal bold 25px/35px Noto Sans KR;font-size:30px;text-align: center;display:none" >${orig_Name}</a>
-												
 												
 												<img src="<spring:url value='/pdfreview/${file_serverName}'/>" style="margin-top:20px;width:800px;display:none" id="serimage">
 												</div>
@@ -863,7 +877,14 @@
 													}
 												else
 												{
-													document.getElementById('serpdf').style.display= "block";
+													//document.getElementById('iframe').style.display= "block";
+													
+													var tmp = `<iframe width="100%" height="100%" src="<spring:url value='/pdfreview/${file_serverName}'/>" />`;
+													$('#controller_background_white').append(tmp);
+													document.getElementById('controller_background_white').style.padding='30px';
+													document.getElementById('controller_background_white').style.boxSizing='border-box';
+													document.getElementById('capture_layer').style.display='none';
+													
 													}
 												</script>
 											

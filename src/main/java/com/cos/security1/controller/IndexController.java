@@ -72,6 +72,7 @@ import com.cos.security1.entity.CostomerCenter;
 import com.cos.security1.entity.Post;
 import com.cos.security1.file.FileService;
 import com.cos.security1.file.MD5Generator;
+import com.cos.security1.img.RmBackgroundImg;
 import com.cos.security1.model.MessageForm;
 import com.cos.security1.model.User;
 import com.cos.security1.pdfimage.Imagetest;
@@ -173,110 +174,18 @@ public class IndexController {
 		return "popup";
 	}
 	
+	@GetMapping("/popup_document")
+	public String popUp_document()
+	{
+		return "popup_document";
+	}
+	
 	@GetMapping("/user")
 	public String userMain()
 	{
 		return "user/userForm";
 	}
-	/*
-	@GetMapping("/user/sendRecv")
-	public String userSendRecv(Model model) throws InvalidKeyException
-	{
-		
-		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		UserRsa rsa=new UserRsa();
-		rsa.setPublicKeyByString(principal.getPublicKey());
-		rsa.setPrivateKeyByString(principal.getPrivateKey());
-		
-		String tempRsa = "자바테스트";
-		String sign=null;
-		
-		try {
-			
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			RSAPublicKeySpec publicSpec = keyFactory.getKeySpec(rsa.getPublicKey(), RSAPublicKeySpec.class);
-			String publicKeyModulus = publicSpec.getModulus().toString(16);
-			String publicKeyExponent = publicSpec.getPublicExponent().toString(16);
-			
-			RSAPrivateKeySpec privateSpec = keyFactory.getKeySpec(rsa.getPrivateKey(), RSAPrivateKeySpec.class);
-			String privateKeyModulus = privateSpec.getModulus().toString(16);
-			String privateKeyExponent = privateSpec.getPrivateExponent().toString(16);
-			
-			
-			
-			model.addAttribute("Modulus","" + publicKeyModulus);
-			model.addAttribute("Exponent","" + publicKeyExponent);
-			
 
-			//System.out.println("원문 : " +tempRsa);
-			//sign = UserRsa.sign(tempRsa, principal.getPrivateKey());
-			//System.out.println("사인 : "+sign);
-			//System.out.println("사인확인 결과 : "+ UserRsa.verifySignarue(tempRsa,sign , "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEUQUHkPRu+b0cD51RKlMGbRFNDyMwWtsSv7kDjJARyOQ7tWC+E/62tNayKAJAMqEFFayel3FvhzGGcSSYD7JGrfeAPqzj13wrwVD5OzQclELP+VOmRis7G15S6EQpZRup7A2KKtTM3I8+"));
-			
-			 
-		        
-			
-		}
-		catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		
-		//System.out.println(principal.getPublicKeyModulus()+"\n"+principal.getPublicKeyExponent());
-		return "user/userSendRecv";
-	}
-	
-	
-	
-	
-	
-	@PostMapping("/user/insertDB")//데이터 받을땐 postmapping
-	public String insertDB(Article messageForm, HttpServletResponse response) throws  NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException
-	{
-		response.setContentType("text/html; charset=UTF-8");
-		PrintWriter out = response.getWriter();
-		try {
-				
-			
-		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
-		UserRsa rsa=new UserRsa();
-		rsa.setPrivateKeyByString(principal.getPrivateKey());
-	//	System.out.println(""+principal.getPrivateKey()+"\n" +rsa.decrypt(messageForm.getY()));
-		
-		if(messageForm.getX().equals(rsa.decrypt(messageForm.getY())))
-		{
-			System.out.println("원문: "+messageForm.getX()+"\n복호화한 암호문 :" +rsa.decrypt(messageForm.getY()) + "\n일치합니다.");
-			
-			out.println("<script>alert('정상적으로 처리되었습니다.');</script>");
-			out.flush();
-		}
-		//form -> entity
-		//Article article = messageForm.toEntity();
-		//repository에게 entity를 db에 저장하도록
-		Article saved = articleRepository.save(messageForm);
-		
-		//받은 id값으로 db찾기
-		//Optional<Article> optArticle = articleRepository.findById(messageForm.getZ());
-		
-		//System.out.println(saved.toString() + ", z="+messageForm.getZ());
-		//System.out.println(optArticle.toString());
-		
-		//articleRepository.deleteById((long)1);//id1 삭제해줘요
-		
-		}catch(InvalidKeyException e)
-		{
-			System.out.println("잘못 된 키로 접근하였습니다.");
-			out.println("<script>alert('잘못 된 키로 접근하였습니다.');</script>");
-			out.println("<a href='/user/sendRecv'></a>");
-			out.flush();
-		}
-		
-	
-		return "index";
-	}
-	*/
 
 	@GetMapping("/admin")
 	public @ResponseBody String admin()
@@ -290,21 +199,7 @@ public class IndexController {
 		return "manager";
 	}
 	
-	/*
-	@GetMapping("/showBoard/{id}")
-	public List<Article> showBoard(@PathVariable("id") String id, Model model)
-	{
-		//System.out.println("id : " + id);
-		
-		//model.addAttribute("show", "show");
-		//List<Post> postlist = postRepository.findAll();
-		
-		List<Article> postlist = articleRepository.findAll();
-		model.addAttribute("secondpost","test");
-		return postlist;
-	}
-	*/
-	
+
 	
 	@SuppressWarnings("unchecked")
 	@ResponseBody
@@ -330,7 +225,7 @@ public class IndexController {
 			else if(article.getPeople3_email().equals(principal.getUsername()))
 				result=3;
 		}
-		System.out.println("result : " +result);
+		System.out.println("article result : " +result);
 		if(result!=0)
 		{
 			
@@ -349,6 +244,24 @@ public class IndexController {
 			return res;
 		}
 		
+		Copyright copyright = copyrightRepository.findByUniquenum(serial);
+		
+		if(copyright != null)
+		{
+			System.out.println(copyright.getPeople1_email());
+			if(copyright.getPeople1_email().equals(principal.getUsername()))
+				result=4;
+
+		}
+		System.out.println("copyright result : " +result);
+		if(result!=0)
+		{
+			
+			res.put("copyright",true);
+			
+			
+			return res;
+		}
 		
 		
 		return null;
@@ -374,7 +287,7 @@ public class IndexController {
 		return "user/DocumentPage";
 	}
 	
-	//마이페이지
+	//마이페이지 정보
 	@SuppressWarnings("unused")
 	@GetMapping("/user/myPage")
 	public String mypage(Model model)
@@ -472,6 +385,7 @@ public class IndexController {
 		return "user/myPage";
 	}
 	
+	//관리자로 다른 사용자 마이 페이지 들어가기
 	@SuppressWarnings("unused")
 	@PostMapping("/user/adminmyPage")
 	public String adminmypage(Model model, String username)
@@ -577,7 +491,7 @@ public class IndexController {
 		return "user/myPage";
 	}
 	
-	//마이페이지
+	//관리자 페이지
 		@SuppressWarnings("unused")
 		@GetMapping("/user/adminPage")
 		public String adminpage(Model model)
@@ -616,7 +530,7 @@ public class IndexController {
 	{
 		return "user/customerEditor";
 	}
-	
+	//게시글 업로드
 	@PostMapping("/user/editUpload")
 	public String editUpload(Model model, String title, String textbody, String secret, String secretpassword, @RequestParam(value = "uploadfile",required = false) MultipartFile file, String checkfile, RedirectAttributes redirect)
 	{
@@ -679,7 +593,7 @@ public class IndexController {
 		
 		return "customerCenter";
 	}
-	
+	//사용자가 접속한 게시글 내용 리턴 
 	@PostMapping("/user/customerShowpost")
 	public String showpost(@RequestParam("id") String id, Model model)
 	{
@@ -700,17 +614,18 @@ public class IndexController {
 		model.addAttribute("post_id",costomerCenter.getId());
 		model.addAttribute("create_time",costomerCenter.getCreateDate());
 		model.addAttribute("user_realname", costomerCenter.getRealname());
+		model.addAttribute("user_email", costomerCenter.getUsername());
 		model.addAttribute("title", costomerCenter.getTitle());
 		model.addAttribute("textbody",costomerCenter.getTextbody());
 		return "user/customerShowpost";
 	}
-	
+	//게시글 삭제
 	@PostMapping("/user/deleteShowpost")
 	public String deletepost(@RequestParam("id") String id, Model model)
 	{
 		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
-		if(principal!=null && principal.getRole().equals("ROLE_ADMIN"))
+		if(principal!=null)
 		{
 			CostomerCenter cos = costomerCenterRepository.findById(Long.parseLong(id));
 			
@@ -729,9 +644,9 @@ public class IndexController {
 		}
 		
 		
-		return "redirect:/";
+		return "redirect:/customerCenter";
 	}
-	
+	//게시글 파일 다운로드
 	@GetMapping(value = "/customerDown/{id}")
     public ResponseEntity<InputStreamResource> getCustomer(@PathVariable("id") String id) throws FileNotFoundException, UnsupportedEncodingException {
 
@@ -807,7 +722,55 @@ public class IndexController {
 		return result;
 	}
 	
+	@PostMapping("/user/updateShowpost")
+	public String to_update_custormer(String id,Model model)
+	{
+		CostomerCenter customer = costomerCenterRepository.findById(Long.parseLong(id));
+		try {
+			File file = new File(fileService.getUpCustomerCenter()+File.separator+customer.getServer_filename());
+			if(file.exists())
+			{
+				file.delete();
+			}
+		}catch(Exception e)
+		{
+			System.out.println("파일없음");
+		}
+		
+		model.addAttribute("id",customer.getId());
+		model.addAttribute("title",customer.getTitle());
+		model.addAttribute("body",customer.getTextbody());
+		model.addAttribute("passwd",customer.getSecretpassword());
+		return "user/customerUpdateEditor";
+	}
 	
+	@PostMapping("/user/updatecustomer")
+	public String updatecustomer(Model model,String id, String title, String textbody, String secret, String secretpassword, @RequestParam(value = "uploadfile",required = false) MultipartFile file, String checkfile, RedirectAttributes redirect)
+	{
+		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		CostomerCenter query = costomerCenterRepository.findById(Long.parseLong(id));
+	
+		query.setTitle(title);
+		query.setTextbody(textbody);
+		query.setSecretpassword(secretpassword);
+		query.setSecretcheck(secret);
+		costomerCenterRepository.save(query);
+		
+	
+		
+		System.out.println(query.getId()+"\n"+ title+"\n"+textbody);
+		
+		/*
+		model.addAttribute("create_time",query.getCreateDate());
+		model.addAttribute("user_realname", principal.getRealname());
+		model.addAttribute("title", title);
+		model.addAttribute("textbody",textbody);
+		*/
+		redirect.addAttribute("customerType",query.getId());
+			
+			
+		return "redirect:/customerCenter";
+	}
 	
 	
 	//자료실
@@ -859,8 +822,29 @@ public class IndexController {
 		model.addAttribute("postlist", pagelist);
 		return "boardForm";
 	}
-	
-	
+	//자료실 자료 삭제
+	@PostMapping("/user/deletepost")
+	public String delpost(String id)
+	{
+		System.out.println("삭제");
+		
+		Post delpost = postRepository.findById(Long.parseLong(id));
+		try
+		{
+			File hwpfile = new File(fileService.getUpBoard()+File.separator+delpost.getServerhwp());
+			hwpfile.delete();
+			File pdffile = new File(fileService.getUpBoard()+File.separator+delpost.getServerpdf());
+			pdffile.delete();
+			
+			postRepository.delete(delpost);
+		}
+		catch(Exception e)
+		{
+			System.out.println("파일없음");
+		}
+		
+		return "redirect:/board";
+	}
 	
 	@GetMapping("/user/boardUpload")
 	public String boardUpload()
@@ -875,7 +859,7 @@ public class IndexController {
 		return "redirect:/";
 	}
 	
-	
+	//관리자로 등록
 	@ResponseBody
 	@GetMapping("/user/makeAdmin")
 	public int makeAdmin(@RequestParam String target)
@@ -1001,9 +985,6 @@ public class IndexController {
 		 //db저장
 		Article savedArticle = message.toEntity();
 		
-		System.out.println("첫번째 사인 좌표 x : "+message.getPer1()[0]+", y : "+message.getPer1()[1]);
-		
-		
 		
 		if(message.getPer1()!=null && message.getPer1().length==2)
 		{
@@ -1052,41 +1033,45 @@ public class IndexController {
 		
 		//유저가 db에 있는지 이메일을 통해 확인
 
-		
+		System.out.println("size : "+savedArticle.getPeople_size());
 		switch(savedArticle.getPeople_size())
 		{
 		case 3:
 			User user3 = userRepository.findByUsername(savedArticle.getPeople3_email());
 			if(user3==null)
 			{
+				System.out.println("사용자3 없음");
 				isValidUser=false;
 				break;
 			}
-			savedArticle.setPeople3_signname(user3.getSignname()); 
-			System.out.println("사인 이름3 : "+user3.getSignname());
+			savedArticle.setPeople3_signname(user3.getUsername()+"_sign.png"); 
+			System.out.println("사인 이름3 : "+user3.getUsername()+"_sign.png");
 		
 			
 		case 2:
 			User user2 = userRepository.findByUsername(savedArticle.getPeople2_email());
-			if(user2==null)
+			if(user2==null || !user2.getRealname().equals(savedArticle.getPeople2_name()))
 			{
+				System.out.println("사용자2 없음");
 				isValidUser=false;
 				break;
 			}
-			savedArticle.setPeople2_signname(user2.getSignname()); 
-			System.out.println("사인 이름2 : "+user2.getSignname());
+			savedArticle.setPeople2_signname(user2.getUsername()+"_sign.png"); 
+			System.out.println("사인 이름2 : "+user2.getUsername()+"_sign.png");
 			
 			
 		case 1:
 			User user = userRepository.findByUsername(savedArticle.getPeople1_email());
+			System.out.println("사용자1 : "+savedArticle.getPeople1_email());
 			if(user==null)
 			{
+				System.out.println("사용자1 없음");
 				isValidUser=false;
 				break;
 			}
 			
-			savedArticle.setPeople1_signname(user.getSignname()); 
-			System.out.println("사인 이름1 : "+user.getSignname());
+			savedArticle.setPeople1_signname(user.getUsername()+"_sign.png"); 
+			System.out.println("사인 이름1 : "+user.getUsername()+"_sign.png");
 			
 		}
 		
@@ -1144,16 +1129,20 @@ public class IndexController {
 		return "redirect:/";//홈페이지로 보냄
 	}
 	
+	//사용자 문서 등록
 	@PostMapping("/user/makeSign2")
 	public String makeSign2(MessageForm message, @RequestParam("uploadFile") MultipartFile file, HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception
 	{
-	
+		//유저 정보 가져오기
+		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		// redirectAttributes.addFlashAttribute("message",
 	              //  "You successfully uploaded " + file.getOriginalFilename() + "!");
 		
 		 //db저장
 		Copyright savedArticle = message.toCopyright();
+		savedArticle.setPeople1_name(principal.getRealname());
+		savedArticle.setPeople1_email(principal.getUsername());
 		
 		System.out.println("첫번째 사인 좌표 x : "+message.getPer1()[0]+", y : "+message.getPer1()[1]);
 		
@@ -1197,23 +1186,92 @@ public class IndexController {
 	
 	
 		
-		customMailSender2.gmailSend(savedArticle,savedArticle.getPeople1_email(),null);
+		//customMailSender2.gmailSend(savedArticle,savedArticle.getPeople1_email(),null);
 	
 		copyrightRepository.save(savedArticle);
 			
 		
+		System.out.println("서명 합성하기");
+		
+
+		Copyright tempArt = savedArticle;
 		
 		
-		return "redirect:/";//홈페이지로 보냄
+		//if(tempArt!=null && tempArt.getCreateDate().toString().equals(create_time.toString()))//해당 이름의 계약서가 있고, 계약서 생성시기도 일치할 때 
+			{
+				System.out.println("계약서 찾음");
+				String sign=null;
+				
+				System.out.println("원문 : " +tempArt.getPlain_text());
+				
+				
+				SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
+				Date time = new Date();
+				String time1 = format1.format(time);
+				
+				String one="1";
+				
+				//if(tempArt.getPeople1_name().equals(principal.getRealname()) && tempArt.getPeople1_email().equals(principal.getUsername())  && !one.equals(tempArt.getPeople1_sign()))
+				{
+					sign = UserRsa.sign(tempArt.getPlain_text(), principal.getPrivateKey());
+					tempArt.setPeople1_encrypt(sign);
+					//System.out.println("사인1 : "+sign);
+					System.out.println("사인1확인 결과 : "+ UserRsa.verifySignarue(tempArt.getPlain_text(),sign, principal.getPublicKey()));
+					tempArt.setPeople1_sign("1");
+					tempArt.setSign_count(tempArt.getSign_count()+1);
+					tempArt.setPeople1_time(time1);
+					//articleRepository.deleteById(tempArt.getId());
+					copyrightRepository.save(tempArt);
+				}
+
+			
+				System.out.println("계약 인원수 : "+tempArt.getPeople_size());
+					
+				//if(signCheck)
+				{
+					//봐야할 파일 주소와 계약서 자료 넘기기
+					Imagetest.makeSignPage2(fileService.getUpDownloadDir(), tempArt);	
+					customMailSender2.gmailSend(tempArt,tempArt.getPeople1_email(),fileService.getUpResultDir()+File.separator+tempArt.getSer_fileName());
+					System.out.println("사인과 이미지 합성완료");
+					
+					
+					
+					
+					
+					
+					//완료된 계약서 파일 해쉬
+					InputStream imageStream = new FileInputStream(fileService.getUpResultDir() +File.separator + tempArt.getSer_fileName());//
+					byte[] imageByteArray = IOUtils.toByteArray(imageStream);
+					imageStream.close();
+					
+					MessageDigest md = MessageDigest.getInstance("SHA-256");
+				    md.update(imageByteArray);
+				    
+				    
+				    StringBuilder builder = new StringBuilder();
+			        for (byte b: md.digest()) {
+			          builder.append(String.format("%02x", b));
+			        }
+			        tempArt.setResult_hash(""+builder.toString());
+
+				    System.out.println("해쉬값 : "+tempArt.getResult_hash());
+				    copyrightRepository.save(tempArt);
+
+					
+				}
+
+			}
+		
+		return "redirect:/user/myPage";//홈페이지로 보냄
 	}
 	
 	
-	
+	//서명 변경
 	@ResponseBody//페이지로 응답할 것임을 명시
 	@PostMapping("/user/changesign")
 	public int changesign(@RequestParam(value="file", required=true) MultipartFile file, @RequestParam(required=false) String title, @RequestParam(required=false) String create_time)
 	{
-		System.out.println("파일 이름 : "+ file.getSize());
+		System.out.println("파일 이름 : "+ file.getOriginalFilename());
 		int result=0;
 		
 		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -1221,6 +1279,8 @@ public class IndexController {
 		Article tempArt = articleRepository.findByPapername(title);
 
 		User tempUser =  userRepository.findByUsername(principal.getUsername());
+		
+		
 		
 		if (tempUser != null ) {
 			System.out.println("서명파일 : " + tempUser.getSignname());
@@ -1265,16 +1325,18 @@ public class IndexController {
 			userRepository.save(tempUser);
 		}
 
-		
+		String filename = principal.getUsername()+"_sign.png";
+		String filePath = fileService.getUpDownloadDir() +File.separator+"userSign"+File.separator +filename;
+		RmBackgroundImg.loadFile(filePath);
 		
 		return result;
 	}
-	
+	//서명변경2
 	@ResponseBody//페이지로 응답할 것임을 명시
 	@PostMapping("/user/changesign2")
 	public int changesign2(@RequestParam(value="file", required=true) MultipartFile file, @RequestParam(required=false) String title, @RequestParam(required=false) String create_time)
 	{
-		System.out.println("파일 이름 : "+ file.getSize());
+		System.out.println("2.파일 이름 : "+ file.getSize());
 		int result=0;
 		
 		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -1284,7 +1346,7 @@ public class IndexController {
 		User tempUser =  userRepository.findByUsername(principal.getUsername());
 		
 		if (tempUser != null ) {
-			System.out.println("서명파일 : " + tempUser.getSignname());
+			System.out.println("2.서명파일 : " + tempUser.getSignname());
 			if (tempUser.getSignname() != null) {
 				File deleteFile = new File(fileService.getUpDownloadDir() + File.separator + "userSign" + File.separator + principal.getSignname());
 				
@@ -1322,7 +1384,7 @@ public class IndexController {
 		return result;
 	}
 	
-	
+	//서명파일 존재하는지 확인
 	@ResponseBody//페이지로 응답할 것임을 명시
 	@GetMapping("/user/checksign")
 	public int checkSign()
@@ -1363,7 +1425,7 @@ public class IndexController {
 		
 		return "redirect:/";
 	}
-	
+	//완료 메일로 계약서 완료 페이지
 	@PostMapping("/user/Documentcomplete")
 	public String documentComplete(String title, Timestamp create_time, Model model )
 	{
@@ -1409,7 +1471,7 @@ public class IndexController {
 		
 		return "user/Documentcomplete";
 	}
-	
+	//일련번호로 계약서 찾아서 완료 페이지 리턴
 	@PostMapping("/user/Documentcomplete2")
 	public String documentComplete2(String serialnum, Model model )
 	{
@@ -1454,7 +1516,28 @@ public class IndexController {
 		
 		return "user/Documentcomplete";
 	}
+	//계약서 삭제
+	@PostMapping("/user/deletedocument")
+	public String deletedocu(String serial)
+	{
+		Article article = articleRepository.findByUniquenum(serial);
+		
+		try {
+		File origin = new File(fileService.getUpDownloadDir()+File.separator+article.getSer_fileName());
+		origin.delete();
+		File result = new File(fileService.getUpResultDir()+File.separator+article.getSer_fileName());
+		result.delete();
+		}catch(Exception e)
+		{
+			System.out.println("파일없음");
+		}
+		
+		articleRepository.delete(article);
+		
+		return "redirect:/user/myPage";
+	}
 	
+	//문서 등록 완료 페이지
 	@PostMapping("/user/copyrightcomplete")
 	public String copyrightComplete(String serialnum, Model model )
 	{
@@ -1495,6 +1578,26 @@ public class IndexController {
 		}
 		
 		return "user/Documentcomplete2";
+	}
+	//문서 삭제
+	@PostMapping("/user/deletecopyright")
+	public String deletecopy(String serial)
+	{
+		Copyright copy = copyrightRepository.findByUniquenum(serial);
+		
+		try {
+		File origin = new File(fileService.getUpDownloadDir()+File.separator+copy.getSer_fileName());
+		origin.delete();
+		File result = new File(fileService.getUpResultDir()+File.separator+copy.getSer_fileName());
+		result.delete();
+		}catch(Exception e)
+		{
+			System.out.println("파일없음");
+		}
+		
+		copyrightRepository.delete(copy);
+		
+		return "redirect:/user/myPage";
 	}
 	
 	@GetMapping("/user/DocumentcheckPage")
@@ -1738,7 +1841,7 @@ public class IndexController {
 	
 	
 	
-	
+	//이미지 파일 응답
 	@GetMapping(value = "/image/{imagename}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)//, produces = MediaType.IMAGE_JPEG_VALUE)//전송하는 스트림이 이미지임을 명시
 	public ResponseEntity<byte[]> userSearch(@PathVariable("imagename") String imagename) throws IOException
 	{ 
@@ -1857,7 +1960,33 @@ public class IndexController {
 			
 	}
 	
-	
+	@GetMapping(value = "/showsignbysession")
+    public ResponseEntity<InputStreamResource> getSignBySession() throws FileNotFoundException {
+
+		PrincipalDetails principal= (PrincipalDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String filename = principal.getUsername()+"_sign.png";
+		
+		System.out.println("파일명 : "+filename );
+		
+        String filePath = fileService.getUpDownloadDir() +File.separator+"userSign"+File.separator +filename;
+        
+       
+        
+        File file = new File(filePath);
+        HttpHeaders headers = new HttpHeaders();      
+        headers.add("content-disposition", "inline;filename=" +filename);
+        
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+     
+		{
+			return ResponseEntity.ok()
+	                .headers(headers)
+	                .contentLength(file.length())
+	                .contentType(MediaType.parseMediaType("application/octet-stream"))
+	                .body(resource);
+		}
+			
+	}
 	
 	
 	@GetMapping("/testing_viewer")
@@ -2421,7 +2550,7 @@ public class IndexController {
 			String rawPassword = user.getPassword();
 			String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 			user.setPassword(encPassword);
-		
+			user.setSignname(user.getUsername()+"_sign.png");
 			
 			KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
 			generator.initialize(1024);

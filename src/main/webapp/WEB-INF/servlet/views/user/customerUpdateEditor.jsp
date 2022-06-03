@@ -47,32 +47,31 @@
                             <p style="font: normal normal normal 18px/24px Noto Sans KR;">바로날인 서비스에 도움을 드립니다.</p>
                         </div>
 
-<form action="/user/editUpload" method="post" id="send" enctype="multipart/form-data">
+<form action="/user/updatecustomer" method="post" id="send" enctype="multipart/form-data">
 	
-	
+	<input type="hidden" name="id" value="${id}">
 	<input type="hidden" name="textbody" id="tb" >
-	
 	
 
 	 <div style="position: relative;width:80%;text-align: left;margin-left: auto;margin-right: auto;">
                             <input onclick="pass()" type="checkbox" style="margin: 0px;zoom:1.2" id="sign_check" name="secret">
                             <label for="secret" style="font: normal normal normal 14px/14px Noto Sans KR">비밀글</label>
-							<input type="password" style="display:none; width:100px;" id="textpass" name="secretpassword" placeholder="비밀번호">
+							<input type="password" style="display:none; width:100px;" id="textpass" name="secretpassword" placeholder="비밀번호" value="${passwd}">
                         </div>
 
                         <div style="position: relative;width:80%;text-align: left;margin-top:20px;margin-left: auto;margin-right: auto;height: 60px;border: 1px solid #707070;
                         border-radius: 8px;">
-                            <input name="title" type="text" id="get_title" placeholder="제목" maxlength="15" style="border:none;position: absolute;top:10px;left:20px;width: calc( 100% - 40px );height:40px;font: normal normal normal 16px/26px Noto Sans KR;">
+                            <input name="title" type="text" id="get_title" value="${title}" placeholder="제목" maxlength="15" style="border:none;position: absolute;top:10px;left:20px;width: calc( 100% - 40px );height:40px;font: normal normal normal 16px/26px Noto Sans KR;">
                         </div>
 	
 	
 	
 	<input type="hidden" name="checkfile" id="isfile" value="yes">
 	<script>
+	
 	let check_pass = false;
 	function pass()
 	{
-		
 		if(!check_pass){
 			document.getElementById("textpass").style.display="block";
 			check_pass = true;
@@ -83,6 +82,12 @@
 		}
 	}
 	
+	if(`${passwd}`!=undefined && `${passwd}`.length>=1)
+	{
+		check_pass = true;
+		document.getElementById("sign_check").checked = true;
+		document.getElementById("textpass").style.display = 'block';
+	}
 	
 	</script>
 
@@ -98,7 +103,7 @@
                         <div style="position: relative; width: 80%;height: 291px; margin-left: auto;margin-right: auto;
                         ">
                             <!-- 에디터 자리 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-						<textarea id="txtContent" rows="10" cols="100" style="width: 100%;height:260px;border-radius: 8px;border: 1px solid #707070;"></textarea>
+						<textarea id="txtContent" rows="10" cols="100" style="width: 100%;height:260px;border-radius: 8px;border: 1px solid #707070;">${body}</textarea>
 	<!-- textarea 밑에 script 작성하기 -->
 	<script id="smartEditor" type="text/javascript"> 
 		var oEditors = [];
@@ -117,8 +122,12 @@
 		    }
 		});
 		
-		
-		
+
+	</script>
+	<script>
+	console.log(`${body}`);
+		oEditors.getById["txtContent"].exec("LOAD_CONTENTS_FIELD"); // 에디터에 내용 삽입
+
 	</script>
                         </div>
                         
@@ -133,7 +142,7 @@
 						<a onclick="save()" style="text-decoration:none">
                         <div style="padding-top:1px;padding-bottom:11px;margin-right:20px;width: 141px;height: 36px;background: #245AE3 0% 0% no-repeat padding-box;
                         border-radius: 8px;">
-                        <p style="text-align: center;font: normal normal medium 14px/10px Noto Sans KR;letter-spacing: 0px;color: #FFFFFF;">문의 등록하기</p>
+                        <p style="text-align: center;font: normal normal medium 14px/10px Noto Sans KR;letter-spacing: 0px;color: #FFFFFF;">수정</p>
                         </div>
                         </a>
                         
@@ -158,21 +167,24 @@
 function save(){
 	var title = document.getElementById("get_title").value;
 	
+	oEditors.getById["txtContent"].exec("UPDATE_CONTENTS_FIELD", []);  
+	//스마트 에디터 값을 텍스트컨텐츠로 전달
+var content = document.getElementById("smartEditor").value;
+	console.log(document.getElementById("txtContent").value);
+	// 값을 불러올 땐 document.get으로 받아오기
+	
 	if(!title)
 	{
 		alert('제목을 입력하십시오.');
 		return false;
 	}
-	
-    $('#isfile').val("no");
 
+	$('#isfile').val("no");
 	
-	oEditors.getById["txtContent"].exec("UPDATE_CONTENTS_FIELD", []);  
-    		//스마트 에디터 값을 텍스트컨텐츠로 전달
-	var content = document.getElementById("smartEditor").value;
+	
+	
     		
-	console.log(document.getElementById("txtContent").value);
-    		// 값을 불러올 땐 document.get으로 받아오기
+	
     		
     $('#tb').val(document.getElementById("txtContent").value);
     $('#send').submit();

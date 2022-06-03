@@ -39,9 +39,9 @@
 								<ul class="button_layer" style="display: flex;list-style : none; padding-left : 0;">
 									<li> 
 									</li>
-									<li> <a onclick="location.href='/board'" class="btn5" style="cursor: pointer"> 자료실
+									<li> <a onclick="location.href='/board'" class="btn5" style="white-space: nowrap;cursor: pointer"> 자료실
 										</a> </li>
-									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="cursor: pointer"> 고객센터
+									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="white-space: nowrap;cursor: pointer"> 고객센터
 										</a> </li>
 
 									<sec:authorize access="isAnonymous()">
@@ -52,19 +52,19 @@
 											announce();
 										</script>
 										<li> <a href="/joinForm" class="btn7"
-												style="cursor: pointer; text-decoration:none"> 회원가입 </a> </li>
+												style="white-space: nowrap;cursor: pointer; text-decoration:none"> 회원가입 </a> </li>
 										<li> <a href="/loginForm" class="btn6"
-												style="cursor: pointer; text-decoration:none"> 로그인 </a> </li>
+												style="white-space: nowrap;cursor: pointer; text-decoration:none"> 로그인 </a> </li>
 									</sec:authorize>
 
 									<sec:authorize access="isAuthenticated()">
-										<li style="margin-left:14px; margin-right:6px;"><a href="/user/myPage" class="btn5" style="cursor: pointer">마이페이지</a></li>
+										<li style="white-space: nowrap;margin-left:14px; margin-right:6px;"><a href="/user/myPage" class="btn5" style="cursor: pointer">마이페이지</a></li>
 										<li>
 											<form action="/logout" method="POST">
 												<input type="hidden" name="${_csrf.parameterName}"
 													value="${_csrf.token}" />
 												<a class="btn6"><button type="submit" class="btn6_sub"
-														style="cursor: pointer; text-decoration:none;">로그아웃</button>
+														style="white-space: nowrap;cursor: pointer; text-decoration:none;">로그아웃</button>
 												</a>
 											</form>
 										</li>
@@ -78,42 +78,100 @@
 
 
 					<!-- 상단 부 -->
-
-					<div
-						style="position:absolute;top: 102px;left: 320px;text-align: left;font: normal normal bold 48px/64px Noto Sans KR;letter-spacing: -1.2px;color: #191919;opacity: 1;">
-						관리자페이지</div>
-					<div
-						style="position: absolute;width:100px;top: 149px;left: 1280px;text-align: left;font: normal normal bold 15px/23px Noto Sans KR;letter-spacing: -0.38px;color: #245AE3;">
-						${name} <span style="color: #6E6E6E;">님</span>
+					<div style="width:90%; position:relative; top:150px; margin-left: auto; margin-right:auto">
+					<div style="display: flex; justify-content: space-between;">
+						<div style="display: flex; align-items: center;">
+						<div
+							style="width:300px;text-align: left;font: normal normal bold 48px/64px Noto Sans KR;letter-spacing: -1.2px;color: #191919;opacity: 1;">
+							관리자페이지</div>
+							<sec:authorize access="isAuthenticated()">
+								<sec:authentication property="principal" var="principal" />
+							
+								<c:if test="${principal.role eq 'ROLE_ADMIN'}">
+										
+										<a onclick="make_admin()" class="btn6" style="height:20px;"><button class="btn6_sub">관리자 추가</button></a>	
+										
+										
+										<script>
+										function make_admin()
+										{
+											var target = prompt("관리자로 변경할 유저의 이메일을 입력하십시오.","");
+											
+											if(target=='' || target==undefined)
+												{
+												alert('공백입니다')
+												return false;
+												}
+											
+											$.ajax({
+												async:true,
+												url:'/user/makeAdmin',
+												type: 'get',
+												dataType: "json",
+												data: {'target': target},
+												success: function(result)
+												{
+													if(result==1)
+														{
+														alert('해당 유저를 관리자로 변경하였습니다.');
+														}
+													else if(result == 0)
+														alert('유저를 찾을 수 없습니다.');
+												},
+												error: function()
+												{
+													alert('err');
+												}
+												
+											});
+										}
+										
+										
+										</script>
+										
+								</c:if>
+								</sec:authorize>	
+						</div>
+						<div style="display: flex;align-items: center;">
+						<div
+							style="width:100px;margin-right: 15px;text-align: left;font: normal normal bold 15px/23px Noto Sans KR;letter-spacing: -0.38px;color: #245AE3;">
+							${name} <span style="color: #6E6E6E;">님</span>
+						</div>
+						<div
+							style="text-align: left;font: normal normal normal 17px/23px Noto Sans KR;letter-spacing: -0.42px;color: #000000;opacity: 1;">
+							${email} </div>
+						</div>
 					</div>
-					<div
-						style="position: absolute;top: 147px;left: 1386px;text-align: left;font: normal normal normal 17px/23px Noto Sans KR;letter-spacing: -0.42px;color: #000000;opacity: 1;">
-						${email} </div>
-					<div style="position: absolute;top: 182px;left: 320px;">
-						<hr style="height: 5px;width: 1280px;border-radius: 10px; background-color: #245AE3;">
+					<div>
+						<hr style="height: 5px;width:100%;border-radius: 10px; background-color: #245AE3;">
 					</div>
+				
 
 					<!-- 현재 진행중인 계약서 파트 -->
 
-					<div style="position: absolute;top: 271px;left:440px">
+					<div style="width:90%; margin-top: 100px;margin-left: auto;margin-right: auto;">
 						<div
-							style="position:absolute;width:300px;font: normal normal bold 23px/23px Noto Sans KR;color: #245AE3;">
+							style="width:100%;text-align: left;font: normal normal bold 23px/23px Noto Sans KR;color: #245AE3;">
 							이용자 목록
 						</div>
-						<div class="my_page_data"
-							style="top:51px;left:337px;width:100px;font-weight: bold;color: #191919;">
-							이름</div>
-						<div class="my_page_data"
-							style="top:51px;left:688px;width:100px;font-weight: bold;color: #191919;opacity: 1;">
-							이메일
-						</div>
-						<div class="my_page_data"
-							style="top:51px;left:941px;width:100px;font-weight: bold;color: #191919;opacity: 1;">
-							이용자 링크
+						<div style="display: flex;margin-top:15px;">
+							<div 
+								style="width:35%;margin-left: 10%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;color: #191919;">
+								이름</div>
+							<div 
+								style="width:40%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;opacity: 1;">
+								이메일
+							</div>
+							<div 
+								style="width:15%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;opacity: 1;">
+								이용자 링크
+							</div>
 						</div>
 					</div>
-					<div style="position: absolute;top: 367px;left: 440px;">
-						<hr style="position: absolute;width: 1040px;height:1px;background-color: #245AE3;">
+
+
+					<div >
+						<hr style="width: 90%; margin-top:20px;margin-left: auto;margin-right: auto;height:1px;background-color: #245AE3;">
 
 						<!-- 여기서 부터는 쿼리에 따른 입력. top을 +60씩 하면서 적용하면 됩니다.-->
 						<c:set var="total" value="22"/>
@@ -121,28 +179,29 @@
 						<c:set var="number" value="1"/>
 						<c:forEach items="${userList}" var="data">
 						
-							
-							<div id="centry1" class="my_page_data" style="top:${total}px;left:50px;">
-								${number}
-							</div>
-							<div id="centry2" class="my_page_data" style="text-align:center;top:${total}px;left:206px;width:300px;">
-								${data.realname}
-							</div>
-							<div id="centry3" class="my_page_data" style="top:${total}px;left:620px;color: #AAAAAA;">
-								${data.username}
-							</div>
-							<div id="centry4" class="my_page_data" style="top:${total}px;left:956px;font-weight: bold;">
-								
-							
-								<form action="/user/adminmyPage" method="post" id="ongoing_submit">
-									<button>Link</button>
-									<input type="hidden" name="username" value="${data.username}">
+							<div style="display: flex; width:90%;margin-left: auto;margin-right: auto;">
+								<div id="centry1" style="width:10%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
+									${number}
+								</div>
+								<div id="centry2" style="width:35%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
+									${data.realname}
+								</div>
+								<div id="centry3" style="width:40%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #AAAAAA;">
+									${data.username}
+								</div>
+								<div id="centry4"  style="width:15%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
 									
-								</form>
 								
+									<form action="/user/adminmyPage" method="post" id="ongoing_submit">
+										<button style="background-color: #245AE3;color:white;padding:7px 15px;cursor:pointer;font-weight: bold;border:none;border-radius: 15px;font-size: 15px;">Link</button>
+										<input type="hidden" name="username" value="${data.username}">
+										
+									</form>
+									
+								</div>
 							</div>
 							<c:set var="total" value="${total + 60}"/>
-							<hr id="bar" class="my_page_bar" style="top:${totalbar}px;">
+							<hr id="bar" style="width:90%;height:1px;background-color: #245AE3;">
 							<c:set var="totalbar" value="${totalbar + 60}"/>
 							<c:set var="number" value="${number + 1}"/>
 					
@@ -158,7 +217,7 @@
 					
 					
 
-
+					<!-- 페이지 끝 -->
 					</div>
 					
 					
@@ -656,7 +715,7 @@
 					
 							<div class="myPage_btn" style="text-align: end; display:flex; position: absolute; top:100px; left:1130px">
                                 <a onclick="test()" id="input_sign_ancher"><img src="/img/sign_on.svg" width=100px
-													style="cursor:pointer;object-fit:contain" id="input_sign"></a>
+													style="display: none;cursor:pointer;object-fit:contain" id="input_sign"></a>
 
 											<br>
                             </div>
@@ -686,58 +745,6 @@
                                 <span style="color:white;">사인 확인</span></div>
                             </div>
 							-->
-
-<sec:authorize access="isAuthenticated()">
-                    <sec:authentication property="principal" var="principal" />
-                  
-					<c:if test="${principal.role eq 'ROLE_ADMIN'}">
-							
-                            
-                            <div class="myPage_btn" style="text-align: end; display:flex; position: absolute; top:140px; left:630px">
-                                <a onclick="make_admin()"><button type="submit" >관리자 추가</button></a>
-                            </div>
-                            
-                            
-                            <script>
-                            function make_admin()
-                            {
-                            	var target = prompt("관리자로 변경할 유저의 이메일을 입력하십시오.","");
-                            	
-                            	if(target=='' || target==undefined)
-                            		{
-                            		alert('공백입니다')
-                            		return false;
-                            		}
-                            	
-                            	$.ajax({
-                            		async:true,
-                            		url:'/user/makeAdmin',
-                            		type: 'get',
-	                        		dataType: "json",
-	                        		data: {'target': target},
-	                        		success: function(result)
-	                        		{
-	                        			if(result==1)
-	                        				{
-	                        				alert('해당 유저를 관리자로 변경하였습니다.');
-	                        				}
-	                        			else if(result == 0)
-	                        				alert('유저를 찾을 수 없습니다.');
-	                        		},
-	                        		error: function()
-	                        		{
-	                        			alert('err');
-	                        		}
-                            		
-                            	});
-                            }
-                            
-                            
-                            </script>
-                            
-					</c:if>
-					</sec:authorize>
-
 				</body>
 
 				</html>

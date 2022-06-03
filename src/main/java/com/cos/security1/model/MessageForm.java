@@ -160,11 +160,11 @@ public class MessageForm {
 		
 		copyright.setPapername(title);
 		copyright.setOrig_papername(title);
-		copyright.setPeople1_name(name1);
-		copyright.setPeople1_email(email1);
+		//copyright.setPeople1_name(name1);
+		//copyright.setPeople1_email(email1);
 
 		
-		copyright.setPeople_size(signNum);
+		copyright.setPeople_size(1);
 		
 		return copyright;
 	}

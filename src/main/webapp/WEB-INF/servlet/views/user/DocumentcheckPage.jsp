@@ -192,7 +192,6 @@
 
 									<script type="text/javascript">
 									function saveSign() {
-										alert('등록하기');
 										var canvas1 = document.getElementById("sign");
 									    var imgDataUrl = canvas1.toDataURL('image/png');
 									    
@@ -223,12 +222,12 @@
 													document.getElementById("input_sign_ancher").onclick = null;
 													document.getElementById("background_gray").style.display = "none";
 													document.getElementById("black_div").style.display = "none";
-													alert('서명 변경성공');
+													alert('서명 등록성공');
 									        	}
 									        },
 									        error : function()
 									        {
-									        	alert('서명 변경실패');
+									        	alert('서명 등록실패');
 									        }
 									        
 										});
@@ -559,7 +558,7 @@
 									});
 								</script>
 
-								<div id="Root" style="height:200%">
+								<div id="Root" style="height:100%">
 
 									<div id="controller_background_gray">
 										
@@ -639,12 +638,12 @@
 													           if(result==0)
 													        	{
 													        	   
-																	alert('서명 변경성공');
+																	alert('서명 등록성공');
 													        	}
 													        },
 													        error : function()
 													        {
-													        	alert('서명 변경실패');
+													        	alert('서명 등록실패');
 													        }
 													        
 														});
@@ -826,7 +825,7 @@
 																		
 																		else
 																			{
-																			alert('사인 하였습니다.');
+																			alert('서명을 완료하였습니다.');
 																			$('#signSub').submit();
 																			}
 																	},
@@ -951,7 +950,6 @@
 												}
 											</script>
 										</div>
-
 										<div id="controller_background_white">
 											<div id="capture_layer">
 											
@@ -973,8 +971,15 @@
 													}
 												else
 												{
-													document.getElementById('serpdf').style.display= "block";
-													}
+													//document.getElementById('iframe').style.display= "block";
+													
+													var tmp = `<iframe width="100%" height="100%" src="<spring:url value='/pdfview/${file_serverName}'/>" />`;
+													$('#controller_background_white').append(tmp);
+													document.getElementById('controller_background_white').style.padding='30px';
+													document.getElementById('controller_background_white').style.boxSizing='border-box';
+													document.getElementById('capture_layer').style.display='none';
+													
+												}
 												</script>
 											
 												</p>
@@ -990,7 +995,6 @@
 												</div>
 											</div>
 										</div>
-
 
 										<div id="document_init" style="display:none">
 											<div id="init" style="display:none">

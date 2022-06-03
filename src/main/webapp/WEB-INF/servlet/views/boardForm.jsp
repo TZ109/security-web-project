@@ -13,7 +13,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="copyright" content="Copyright (c) 2021 VANE company All rights reserved">
-	<meta content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no;shrink-to-fit=no" name="viewport" />
+	<!--<meta content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no;shrink-to-fit=no" name="viewport" />
+	-->
 	<link rel="stylesheet" type="text/css" href="/css/style.css">
 	<link rel="stylesheet" type="text/css" href="/css/style_board.css">
 	<link rel="stylesheet" type="text/css" href="/css/style_signpage.css?ver=4">
@@ -28,7 +29,7 @@
 	
 <div id="Page" style="width: 100%;">
 	<div id = "Controll_Layer">
-		<nav class="navbar" style="display: flex;justify-content: space-between;align-items: center;padding: 8px 12px;max-height:100px;
+		<nav class="navbar" style="display: flex;justify-content: space-between;align-items: center;padding: 8px 12px;max-height:80px;
 		min-height:80px;">
 		<a href="/">
 									<img src="/img/google.png" style="height:80px" />
@@ -36,27 +37,27 @@
 
 								<ul class="button_layer" style="display: flex;list-style : none; padding-left : 0;">
 									
-									<li> <a onclick="location.href='/board'" class="btn5" style="cursor: pointer"> 자료실
+									<li> <a onclick="location.href='/board'" class="btn5" style="cursor: pointer;white-space: nowrap;"> 자료실
 										</a> </li>
-									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="cursor: pointer"> 고객센터
+									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="cursor: pointer;white-space: nowrap;"> 고객센터
 										</a> </li>
 
 									<sec:authorize access="isAnonymous()">
 										
 										<li> <a href="/joinForm" class="btn7"
-												style="cursor: pointer; text-decoration:none"> 회원가입 </a> </li>
+												style="cursor: pointer; text-decoration:none;white-space: nowrap;"> 회원가입 </a> </li>
 										<li> <a href="/loginForm" class="btn6"
-												style="cursor: pointer; text-decoration:none"> 로그인 </a> </li>
+												style="cursor: pointer; text-decoration:none;white-space: nowrap;"> 로그인 </a> </li>
 									</sec:authorize>
 
 									<sec:authorize access="isAuthenticated()">
-										<li style="margin-left:14px; margin-right:6px;"><a href="/user/myPage" class="btn5" style="cursor: pointer">마이페이지</a></li>
+										<li style="margin-left:14px; margin-right:6px;"><a href="/user/myPage" class="btn5" style="cursor: pointer;white-space: nowrap;">마이페이지</a></li>
 										<li>
 											<form action="/logout" method="POST">
 												<input type="hidden" name="${_csrf.parameterName}"
 													value="${_csrf.token}" />
 												<a class="btn6"><button type="submit" class="btn6_sub"
-														style="cursor: pointer; text-decoration:none;">로그아웃</button>
+														style="cursor: pointer; text-decoration:none;white-space: nowrap;">로그아웃</button>
 												</a>
 											</form>
 										</li>
@@ -65,14 +66,12 @@
 
 			</nav>
 		</div>
-	</div>
 
-	 <div class="tab-pane fade active show" id="game" style="margin:10px;">
-	 		<h5 class="title">자료실</h5>
-	 			<hr style="width:1280px">
-                            <form action="/board" method="get" id="category_select">
-                            	<input name="postType" id="post_type">
-                            </form>
+		<div class="data-table">
+
+			<h5 class="title">자료실</h5>
+	 			<hr>
+                            
                             <p class="category">동의서,계약서,거래서 등 다양한 문서 방식을 무료로 다운로드 받으세요.</p>
                             
                             <div class="sub_div">
@@ -124,6 +123,16 @@
                                         <th>*분야*</th>
                                         <th>*문서*</th>
                                         <th>*형식*</th>
+                                        
+                                        <!-- 관리자 삭제 헤더 -->
+                                        <sec:authorize access="isAuthenticated()">
+					                    <sec:authentication property="principal" var="principal" />
+					                  
+										<c:if test="${principal.role eq 'ROLE_ADMIN'}">
+                                        <th>*삭제*</th>
+					                   </c:if>
+										</sec:authorize>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -133,6 +142,30 @@
                                         <td>${data.specificType}</td>
                                         <td style="text-align:center;"> ${data.title}</td>
                                         <td><a href="/boardDown/${data.serverpdf}">PDF</a><b> | </b><a href="/boardDown/${data.serverhwp}">HWP</a></td>
+                                        
+                                        <!-- 관리자 삭제 버튼 -->
+                                        <sec:authorize access="isAuthenticated()">
+					                    <sec:authentication property="principal" var="principal" />
+					                  
+										<c:if test="${principal.role eq 'ROLE_ADMIN'}">
+                                        <td><a class="btn6"><button onclick="delpost()" class="btn6_sub" style="cursor: pointer; text-decoration:none;white-space: nowrap;margin-top:3px;margin-bottom:3px;">삭제</button></a></td>
+                                        
+                                        <form method="post" action="/user/deletepost" id="delpost">
+                                        	<input name="id" value="${data.id}" style="display:none;"/>
+                                        </form>
+                                        
+                                        <script>
+                                        	function delpost()
+                                        	{
+                                        		alert('삭제');
+                                        		$('#delpost').submit();
+                                        	}
+                                        	
+                                        </script>
+                                        
+                                        </c:if>
+										</sec:authorize>
+                                        
                                     </tr>
                               		
                                 </c:forEach>
@@ -141,11 +174,11 @@
                                 </tbody>
                                 
 					
-							<sec:authorize access="isAuthenticated()">
+					<sec:authorize access="isAuthenticated()">
                     <sec:authentication property="principal" var="principal" />
                   
 					<c:if test="${principal.role eq 'ROLE_ADMIN'}">
-							<div class="col-lg-12" style="text-align: end; padding:20px 40px;display:flex;">
+							<div class="col-lg-12" style="position:relative;top:-30px;width:85%;text-align: end; padding:0px 40px;">
                                 <a href="/user/boardUpload"><button type="submit" class="site-btn">양식 업로드</button></a>
                             </div>
                             
@@ -233,5 +266,8 @@
                    		
 
 	</div>
+	</div>
+
+	
 </body>
 </html>

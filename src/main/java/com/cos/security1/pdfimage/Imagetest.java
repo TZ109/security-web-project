@@ -124,7 +124,7 @@ public class Imagetest {
 		    //실제 글씨 쓰는곳
 		  
 	         
-	         Font f1 = new Font("굴림", Font.PLAIN, 12);
+	         Font f1 = new Font("굴림", Font.PLAIN, 10);
 	         graphics.setColor(Color.BLACK); 
 	         graphics.setFont(f1);
 	         
@@ -138,7 +138,7 @@ public class Imagetest {
 	         }
 	         
 	         
-	         graphics.drawString("전자서명 일련번호 : "+tempString2,20,height-30);
+	         graphics.drawString(tempString2,20,height-30);
 		   
 	         int temp_width = 128*imageit[0].getWidth(null)/793;
 
@@ -302,7 +302,7 @@ public class Imagetest {
 	        	 }
 	         }
 	         
-	         graphics.drawString("전자서명 일련번호:"+tempString2,20,height-30);
+	         graphics.drawString(tempString2,20,height-30);
 		   
 	         int temp_width = 128*imageit[0].getWidth(null)/793;
 

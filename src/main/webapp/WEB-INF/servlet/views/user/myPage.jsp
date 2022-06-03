@@ -39,9 +39,9 @@
 								<ul class="button_layer" style="display: flex;list-style : none; padding-left : 0;">
 									<li> 
 									</li>
-									<li> <a onclick="location.href='/board'" class="btn5" style="cursor: pointer"> 자료실
+									<li> <a onclick="location.href='/board'" class="btn5" style="cursor: pointer;white-space: nowrap;"> 자료실
 										</a> </li>
-									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="cursor: pointer"> 고객센터
+									<li> <a onclick="location.href='/customerCenter'" class="btn5" style="cursor: pointer;white-space: nowrap;"> 고객센터
 										</a> </li>
 
 									<sec:authorize access="isAnonymous()">
@@ -52,19 +52,19 @@
 											announce();
 										</script>
 										<li> <a href="/joinForm" class="btn7"
-												style="cursor: pointer; text-decoration:none"> 회원가입 </a> </li>
+												style="cursor: pointer; text-decoration:none;white-space: nowrap;"> 회원가입 </a> </li>
 										<li> <a href="/loginForm" class="btn6"
-												style="cursor: pointer; text-decoration:none"> 로그인 </a> </li>
+												style="cursor: pointer; text-decoration:none;white-space: nowrap;"> 로그인 </a> </li>
 									</sec:authorize>
 
 									<sec:authorize access="isAuthenticated()">
-										<li style="margin-left:14px; margin-right:6px;"><a href="/user/myPage" class="btn5" style="cursor: pointer">마이페이지</a></li>
+										<li style="margin-left:14px; margin-right:6px;"><a href="/user/myPage" class="btn5" style="cursor: pointer;white-space: nowrap;text-decoration: none;">마이페이지</a></li>
 										<li>
 											<form action="/logout" method="POST">
 												<input type="hidden" name="${_csrf.parameterName}"
 													value="${_csrf.token}" />
 												<a class="btn6"><button type="submit" class="btn6_sub"
-														style="cursor: pointer; text-decoration:none;">로그아웃</button>
+														style="cursor: pointer; text-decoration:none;white-space: nowrap;">로그아웃</button>
 												</a>
 											</form>
 										</li>
@@ -78,42 +78,106 @@
 
 
 					<!-- 상단 부 -->
-
-					<div
-						style="position:absolute;top: 102px;left: 320px;text-align: left;font: normal normal bold 48px/64px Noto Sans KR;letter-spacing: -1.2px;color: #191919;opacity: 1;">
+					<div style="width:90%; position:relative; top:150px; margin-left: auto; margin-right:auto">
+					<div style="display:  flex; justify-content: space-between;">
+						<div style="display:  flex; align-items: center;">
+						<div style="width:240px;text-align: left;font: normal normal bold 48px/64px Noto Sans KR;letter-spacing: -1.2px;color: #191919;opacity: 1;">
 						마이페이지</div>
-					<div
-						style="position: absolute;width:100px;top: 149px;left: 1280px;text-align: left;font: normal normal bold 15px/23px Noto Sans KR;letter-spacing: -0.38px;color: #245AE3;">
-						${name} <span style="color: #6E6E6E;">님</span>
+						<!-- 관리자 추가 버튼 -->
+						<sec:authorize access="isAuthenticated()">
+                    <sec:authentication property="principal" var="principal" />
+                  
+					<c:if test="${principal.role eq 'ROLE_ADMIN'}">
+							  
+							<a onclick="make_admin()" class="btn6" style="height:20px;"><button class="btn6_sub">관리자 추가</button></a>	
+                            
+                            
+                            <script>
+                            function make_admin()
+                            {
+                            	var target = prompt("관리자로 변경할 유저의 이메일을 입력하십시오.","");
+                            	
+                            	if(target=='' || target==undefined)
+                            		{
+                            		alert('공백입니다')
+                            		return false;
+                            		}
+                            	
+                            	$.ajax({
+                            		async:true,
+                            		url:'/user/makeAdmin',
+                            		type: 'get',
+	                        		dataType: "json",
+	                        		data: {'target': target},
+	                        		success: function(result)
+	                        		{
+	                        			if(result==1)
+	                        				{
+	                        				alert('해당 유저를 관리자로 변경하였습니다.');
+	                        				}
+	                        			else if(result == 0)
+	                        				alert('유저를 찾을 수 없습니다.');
+	                        		},
+	                        		error: function()
+	                        		{
+	                        			alert('err');
+	                        		}
+                            		
+                            	});
+                            }
+                            
+                            
+                            </script>
+                            
+					</c:if>
+					</sec:authorize>
+					
+						</div>	
+						<div style="display: flex;align-items: center;">
+						<div class="btn6" style="height:20px;margin-right: 10px;"><button class="btn6_sub" onclick="test()">서명 확인</button></div>	
+						<div class="btn6" style="height:20px;margin-right: 10px;"><button class="btn6_sub" onclick="test2();">서명 변경</button></div>
+						
+						
+							
+						<div
+							style="position: relative;width:80px;margin-right: 15px;text-align: left;font: normal normal bold 15px/23px Noto Sans KR;letter-spacing: -0.38px;color: #245AE3;">
+							${name} <span style="color: #6E6E6E;">님</span>
+						</div>
+						<div
+							style="position: relative;text-align: left;font: normal normal normal 17px/23px Noto Sans KR;letter-spacing: -0.42px;color: #000000;opacity: 1;">
+							${email} </div>
+						</div>	
+						
+					</div>	
+					<div style="position:relative;width:100%">
+						<hr style="height: 5px;width: 100%;border-radius: 10px; background-color: #245AE3;">
 					</div>
-					<div
-						style="position: absolute;top: 147px;left: 1386px;text-align: left;font: normal normal normal 17px/23px Noto Sans KR;letter-spacing: -0.42px;color: #000000;opacity: 1;">
-						${email} </div>
-					<div style="position: absolute;top: 182px;left: 320px;">
-						<hr style="height: 5px;width: 1280px;border-radius: 10px; background-color: #245AE3;">
-					</div>
-
 					<!-- 현재 진행중인 계약서 파트 -->
 
-					<div style="position: absolute;top: 271px;left:440px">
+					<div style="width:90%; margin-top: 100px;margin-left: auto;margin-right: auto;">
 						<div
-							style="position:absolute;width:300px;font: normal normal bold 23px/23px Noto Sans KR;color: #245AE3;">
+							style="width:100%;text-align: left;font: normal normal bold 23px/23px Noto Sans KR;color: #245AE3;">
 							현재 진행중인 계약서
 						</div>
-						<div class="my_page_data"
-							style="top:51px;left:337px;width:100px;font-weight: bold;color: #191919;">
-							제목</div>
-						<div class="my_page_data"
-							style="top:51px;left:688px;width:100px;font-weight: bold;color: #191919;opacity: 1;">
-							진행중
-						</div>
-						<div class="my_page_data"
-							style="top:51px;left:941px;width:100px;font-weight: bold;color: #191919;opacity: 1;">
-							다운로드
+						<div style="display: flex;margin-top:15px;">
+							<div 
+								style="width:50%;margin-left: 10%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;color: #191919;">
+								제목</div>
+							<div 
+								style="width:26%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;color: #191919;">
+								생성날짜</div>
+							<div 
+								style="width:12%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;opacity: 1;">
+								진행중
+							</div>
+							<div 
+								style="width:12%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;opacity: 1;">
+								다운로드
+							</div>
 						</div>
 					</div>
-					<div style="position: absolute;top: 367px;left: 440px;">
-						<hr style="position: absolute;width: 1040px;height:1px;background-color: #245AE3;">
+					<div>
+						<hr style="width: 90%; margin-top:20px;margin-left: auto;margin-right: auto;height:1px;background-color: #245AE3;">
 
 						<!-- 여기서 부터는 쿼리에 따른 입력. top을 +60씩 하면서 적용하면 됩니다.-->
 						<c:set var="total" value="22"/>
@@ -121,28 +185,35 @@
 						<c:set var="number" value="1"/>
 						<c:forEach items="${ongoing}" var="data">
 						
-							
-							<div id="centry1" class="my_page_data" style="top:${total}px;left:50px;">
+							<div style="display: flex; width:90%;margin-left: auto;margin-right: auto;">
+							<div id="centry1" style="width:10%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
 								${number}
 							</div>
-							<div id="centry2" class="my_page_data" style="text-align:center;top:${total}px;left:206px;width:300px;">
+							<div id="centry2" style="width:50%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
 								${data.orig_papername}
 							</div>
-							<div id="centry3" class="my_page_data" style="top:${total}px;left:700px;color: #AAAAAA;">
+							<div id="centry5_ongoing_${number}" style="width:26%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
+									${data.createDate}
+							</div>
+							<script>
+									document.getElementById('centry5_ongoing_'+`${number}`).innerText = `${data.createDate}`.substring(0,10);
+								</script>	
+							<div id="centry3" style="width:12%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #AAAAAA;">
 								${data.sign_count}/${data.people_size}
 							</div>
-							<div id="centry4" class="my_page_data" style="top:${total}px;left:956px;font-weight: bold;">
+							<div id="centry4" style="width:12%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
 								
 							
 								<form action="/user/signedDownload" method="post" id="ongoing_submit">
-									<button>Download</button>
+									<button style="background-color: #245AE3;color:white;padding:5px 10px;text-align: center;text-decoration: none;border:none;border-radius: 10px;cursor:pointer">Download</button>
 									<input type="hidden" name="title" value="${data.papername}">
 									<input type="hidden" name="create_time" value="${data.createDate}">
 								</form>
 								
 							</div>
+						</div>
 							<c:set var="total" value="${total + 60}"/>
-							<hr id="bar" class="my_page_bar" style="top:${totalbar}px;">
+							<hr id="bar" style="width:90%;height:1px;background-color: #245AE3;">
 							<c:set var="totalbar" value="${totalbar + 60}"/>
 							<c:set var="number" value="${number + 1}"/>
 					
@@ -152,26 +223,31 @@
 
 					<!-- 완료된 계약서 파트 위의 마지막 바(ex.<hr class="my_page_bar" style="top:180px;">) 기준 +64px -->
 
-					<div style="position: absolute;top: ${totalbar+64}px;">
+					<div style="width:90%; margin-top: 60px;margin-left: auto;margin-right: auto;">
 						<div
-							style="position:absolute;width:300px;font: normal normal bold 23px/23px Noto Sans KR;color: #245AE3;">
+							style="width:100%;text-align: left;font: normal normal bold 23px/23px Noto Sans KR;color: #245AE3;">
 							완료된 계약서
 						</div>
-						<div class="my_page_data"
-							style="top:51px;left:337px;width:100px;font-weight: bold;color: #191919;">
-							제목</div>
-						<div class="my_page_data"
-							style="top:51px;left:688px;width:100px;font-weight: bold;color: #191919;opacity: 1;">
-							완료
-						</div>
-						<div class="my_page_data"
-							style="top:51px;left:941px;width:100px;font-weight: bold;color: #191919;opacity: 1;">
-							확인페이지
+						<div style="display: flex;margin-top:15px;">
+							<div 
+								style="width:50%;margin-left: 10%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;color: #191919;">
+								제목</div>
+							<div 
+								style="width:26%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;color: #191919;">
+								생성날짜</div>
+							<div 
+								style="width:12%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;opacity: 1;">
+								완료
+							</div>
+							<div 
+								style="width:12%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;opacity: 1;">
+								확인 페이지
+							</div>
 						</div>
 					</div>
 					<!-- 아래는 위의 기준 <div style="position: absolute;top: 244px;"> 기준 +92px -->
-					<div style="position: absolute;top: ${totalbar+92+64}px;">
-						<hr style="position: absolute;width: 1040px;height:1px;background-color: #245AE3;">
+					<div>
+						<hr style="width: 90%; margin-top:20px;margin-left: auto;margin-right: auto;height:1px;background-color: #245AE3;">
 
 						<!-- 여기서 부터는 쿼리에 따른 입력. top을 +60씩 하면서 적용하면 됩니다.-->
 						<c:set var="total" value="22"/>
@@ -179,35 +255,43 @@
 						<c:set var="number" value="1"/>
 						<c:forEach items="${completed}" var="data">
 						
+							<div style="display: flex; width:90%;margin-left: auto;margin-right: auto;">
+								<div id="centry1" style="width:10%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
+									${number}
+								</div>
+								<div id="centry2" style="width:50%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
+									${data.orig_papername}
+								</div>
+								<div id="centry5_com1_${number}" style="width:26%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
+
+								</div>
+								<script>
+									document.getElementById('centry5_com1_'+`${number}`).innerText = `${data.createDate}`.substring(0,10);
+								</script>
+								<div id="centry3" style="width:12%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #AAAAAA;">
+									${data.sign_count}/${data.people_size}
+									
+								</div>
 							
-							<div id="centry1" class="my_page_data" style="top:${total}px;left:50px;">
-								${number}
-							</div>
-							<div id="centry2" class="my_page_data" style="text-align:center;top:${total}px;left:206px;width:300px;">
-								${data.orig_papername}
-							</div>
-							<div id="centry3" class="my_page_data" style="top:${total}px;width:100px;left:688px;color: #AAAAAA;">
-								${data.sign_count}/${data.people_size}
+								<div id="centry4" style="width:12%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
 								
-							</div>
-							<div id="centry4" class="my_page_data" style="width:80px;top:${total}px;left:956px;font-weight: bold;">
-							
-								<form action="/user/Documentcomplete" method="post" id="completed_submit">
-									<button style="font-weight: bold;color: #245AE3;">확인</button>
-									<input type="hidden" name="title" value="${data.papername}">
-									<input type="hidden" name="create_time" value="${data.createDate}">
-								</form>
-								<!--  
-								<form action="/user/completesignedDownload" method="post" id="completed_submit">
-									<button>Download</button>
-									<input type="hidden" name="title" value="${data.papername}">
-									<input type="hidden" name="create_time" value="${data.createDate}">
-								</form>
-								-->
-							
+									<form action="/user/Documentcomplete" method="post" id="completed_submit">
+										<button style="font-weight: bold;background-color: #245AE3;color:white;border:none;padding:5px 20px;text-align: center;text-decoration: none;border-radius: 10px;cursor:pointer">확인</button>
+										<input type="hidden" name="title" value="${data.papername}">
+										<input type="hidden" name="create_time" value="${data.createDate}">
+									</form>
+									<!--  
+									<form action="/user/completesignedDownload" method="post" id="completed_submit">
+										<button>Download</button>
+										<input type="hidden" name="title" value="${data.papername}">
+										<input type="hidden" name="create_time" value="${data.createDate}">
+									</form>
+									-->
+								
+								</div>
 							</div>
 							<c:set var="total" value="${total + 60}"/>
-							<hr id="bar" class="my_page_bar" style="top:${totalbar}px;">
+							<hr id="bar" style="width:90%;height:1px;background-color: #245AE3;">
 							<c:set var="totalbar" value="${totalbar + 60}"/>
 							<c:set var="number" value="${number + 1}"/>
 					
@@ -217,26 +301,31 @@
 						
 					
 						
-						<div style="position: absolute;top: ${totalbar+64}px;">
+						<div style="width:90%; margin-top: 60px;margin-left: auto;margin-right: auto;">
 						<div
-							style="position:absolute;width:300px;font: normal normal bold 23px/23px Noto Sans KR;color: #245AE3;">
-							등록한 저작권
+							style="width:100%;text-align: left;font: normal normal bold 23px/23px Noto Sans KR;color: #245AE3;">
+							등록한 문서
 						</div>
-						<div class="my_page_data"
-							style="top:51px;left:337px;width:100px;font-weight: bold;color: #191919;">
+						<div style="display: flex;text-align: center;">
+						<div 
+							style="width:50%;margin-left: 10%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;color: #191919;">
 							제목</div>
-						<div class="my_page_data"
-							style="top:51px;left:688px;width:100px;font-weight: bold;color: #191919;opacity: 1;">
+						<div 
+							style="width:26%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;color: #191919;">
+							생성날짜</div>
+						<div
+							style="width:12%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;opacity: 1;">
 							완료
 						</div>
-						<div class="my_page_data"
-							style="top:51px;left:941px;width:100px;font-weight: bold;color: #191919;opacity: 1;">
-							확인페이지
+						<div 
+							style="width:12%;text-align: center;font:bold normal normal 17px/23px Noto Sans KR;opacity: 1;">
+							확인 페이지
+						</div>
 						</div>
 					</div>
 					<!-- 아래는 위의 기준 <div style="position: absolute;top: 244px;"> 기준 +92px -->
-					<div style="position: absolute;top: ${totalbar+92+64}px;">
-						<hr style="position: absolute;width: 1040px;height:1px;background-color: #245AE3;">
+					<div>
+						<hr style="width: 90%; margin-top:20px;margin-left: auto;margin-right: auto;height:1px;background-color: #245AE3;">
 
 						<!-- 여기서 부터는 쿼리에 따른 입력. top을 +60씩 하면서 적용하면 됩니다.-->
 						<c:set var="total" value="22"/>
@@ -244,35 +333,42 @@
 						<c:set var="number" value="1"/>
 						<c:forEach items="${completed2}" var="data">
 						
-							
-							<div id="centry1" class="my_page_data" style="top:${total}px;left:50px;">
-								${number}
-							</div>
-							<div id="centry2" class="my_page_data" style="text-align:center;top:${total}px;left:206px;width:300px;">
-								${data.orig_papername}
-							</div>
-							<div id="centry3" class="my_page_data" style="top:${total}px;width:100px;left:688px;color: #AAAAAA;">
-								${data.sign_count}/${data.people_size}
+							<div style="display: flex; width:90%;margin-left: auto;margin-right: auto;">
+								<div id="centry1" style="width:10%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
+									${number}
+								</div>
+								<div id="centry2" style="width:50%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
+									${data.orig_papername}
+								</div>
+								<div id="centry5_com2_${number}" style="width:26%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
+								</div>
+								<script>
+									document.getElementById('centry5_com2_'+`${number}`).innerText = `${data.createDate}`.substring(0,10);
+								</script>
 								
-							</div>
-							<div id="centry4" class="my_page_data" style="width:80px;top:${total}px;left:956px;font-weight: bold;">
-							
-								<form action="/user/copyrightcomplete" method="post" id="completed_submit">
-									<button style="font-weight: bold;color: #245AE3;">확인</button>
-									<input type="hidden" name="serialnum" value="${data.uniquenum}">
+								<div id="centry3" style="width:12%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #AAAAAA;">
+									${data.sign_count}/${data.people_size}
 									
-								</form>
-								<!--  
-								<form action="/user/completesignedDownload" method="post" id="completed_submit">
-									<button>Download</button>
-									<input type="hidden" name="title" value="${data.papername}">
-									<input type="hidden" name="create_time" value="${data.createDate}">
-								</form>
-								-->
-							
+								</div>
+								<div id="centry4" style="width:12%;text-align: center;font:normal normal normal 17px/23px Noto Sans KR;color: #191919;">
+								
+									<form action="/user/copyrightcomplete" method="post" id="completed_submit">
+										<button style="font-weight: bold;background-color: #245AE3;color:white;border: none;border-radius: 10px;padding:5px 20px;cursor:pointer">확인</button>
+										<input type="hidden" name="serialnum" value="${data.uniquenum}">
+										
+									</form>
+									<!--  
+									<form action="/user/completesignedDownload" method="post" id="completed_submit">
+										<button>Download</button>
+										<input type="hidden" name="title" value="${data.papername}">
+										<input type="hidden" name="create_time" value="${data.createDate}">
+									</form>
+									-->
+								
+								</div>
 							</div>
 							<c:set var="total" value="${total + 60}"/>
-							<hr id="bar" class="my_page_bar" style="top:${totalbar}px;">
+							<hr id="bar" style="width:90%;height:1px;background-color: #245AE3;">
 							<c:set var="totalbar" value="${totalbar + 60}"/>
 							<c:set var="number" value="${number + 1}"/>
 					
@@ -298,7 +394,7 @@
 					
 					
 
-
+					</div>
 					</div>
 					
 					
@@ -309,10 +405,22 @@
 					</div>
 					
 								<script>
-									function test() {
+								function test() {
+									document.getElementById("background_gray").style.display = "inline-block";
+									document.getElementById("background_gray").style.position = "fixed";
+									document.getElementById("second_layer").style.display = "none";
+									document.getElementById("show_sign_layer").style.display = "inline-block";
+									var tmp = "<img id ='show_sign' width='500' height='300' style='image-rendering: auto;object-fit:contain;' src='<spring:url value='/showsignbysession'/>'>";
+									$('#show_sign_layer').append(tmp);
+									document.getElementById('sign_Layer').style.display = "none";
+									document.getElementById('stamp_Layer').style.display = "none";
+									document.getElementById("black_div").style.display = "block";
+								}
+									function test2() {
 										document.getElementById("background_gray").style.display = "inline-block";
 										document.getElementById("background_gray").style.position = "fixed";
 										document.getElementById("second_layer").style.display = "inline-block";
+										document.getElementById("show_sign_layer").style.display = "none";
 										document.getElementById('sign_Layer').style.display = "none";
 										document.getElementById('stamp_Layer').style.display = "none";
 										document.getElementById("black_div").style.display = "block";
@@ -353,6 +461,9 @@
 									function close_div() {
 										document.getElementById("background_gray").style.display = "none";
 										document.getElementById("black_div").style.display = "none";
+										var temp = document.getElementById("show_sign");
+										if(temp!=undefined)
+											temp.remove();
 									}
 
 									function prev_div() {
@@ -365,12 +476,69 @@
 									}
 								</script>
 
+								<div id="show_sign_layer" style="margin-top:140px; display:none;">
+								</div>
+
 								<div id="second_layer" style="margin-top:140px; display:none;">
 
 									<a onclick="expand_layer('sign_draw')"><img src="/img/test4.png" width=160px
 											style="cursor:pointer"></a>
+									<a onclick="signfile_upload()"><img src="/img/test7.png" width=160px
+											style="cursor:pointer"></a>
 									<a onclick="expand_layer('stamp')"><img src="/img/test3.png" width=160px
 											style="cursor:pointer"></a>
+
+									<input type="file" style="display:none" id="signupfile" onchange="upload_sign2(this.files)">
+									
+									<script>
+										function signfile_upload()
+										{
+											document.getElementById('signupfile').click();
+										}
+										
+										function upload_sign2(files){
+												
+												
+											    var file = files[0];	// Blob 생성
+				
+											    var formdata = new FormData();
+											    formdata.append("file", file);
+											    formdata.append("title",`${paper_name}`);
+											    formdata.append("create_time",`${create_date}`);
+											    
+											    if(file!=undefined)
+											    {
+											    	$.ajax({
+												    	async : true, 
+												        type : 'POST',
+												        url : '/user/changesign',
+												        data : formdata,
+												        dataType: "json",
+												        processData : false,	// data 파라미터 강제 string 변환 방지!!
+												      	contentType : false,	// application/x-www-form-urlencoded; 방지!!
+												        success : function (result) {
+												           if(result==0)
+												        	{
+												        	   document.getElementById("background_gray").style.display = "none";
+																document.getElementById("black_div").style.display = "none";
+																var temp = document.getElementById("show_sign");
+																if(temp!=undefined)
+																	temp.remove();
+												        	   
+																alert('서명 등록성공');
+												        	}
+												        },
+												        error : function()
+												        {
+												        	alert('서명 등록실패');
+												        }
+												        
+													});
+											    }
+											    
+											
+										}
+									</script>
 
 									<script>
 										function expand_layer(e) {
@@ -465,12 +633,16 @@
 													//document.getElementById("input_sign_ancher").onclick = null;
 													document.getElementById("background_gray").style.display = "none";
 													document.getElementById("black_div").style.display = "none";
-													alert('서명 변경성공');
+													var temp = document.getElementById("show_sign");
+													if(temp!=undefined)
+														temp.remove();
+													
+													alert('서명 둥록성공');
 									        	}
 									        },
 									        error : function()
 									        {
-									        	alert('서명 변경실패');
+									        	alert('서명 등록실패');
 									        }
 									        
 										});
@@ -796,7 +968,7 @@
 					
 							<div class="myPage_btn" style="text-align: end; display:flex; position: absolute; top:100px; left:1130px">
                                 <a onclick="test()" id="input_sign_ancher"><img src="/img/sign_on.svg" width=100px
-													style="cursor:pointer;object-fit:contain" id="input_sign"></a>
+													style="display:none;cursor:pointer;object-fit:contain" id="input_sign"></a>
 
 											<br>
                             </div>
@@ -827,56 +999,7 @@
                             </div>
 							-->
 
-<sec:authorize access="isAuthenticated()">
-                    <sec:authentication property="principal" var="principal" />
-                  
-					<c:if test="${principal.role eq 'ROLE_ADMIN'}">
-							
-                            
-                            <div class="myPage_btn" style="text-align: end; display:flex; position: absolute; top:140px; left:570px">
-                                <a onclick="make_admin()"><button type="submit" >관리자 추가</button></a>
-                            </div>
-                            
-                            
-                            <script>
-                            function make_admin()
-                            {
-                            	var target = prompt("관리자로 변경할 유저의 이메일을 입력하십시오.","");
-                            	
-                            	if(target=='' || target==undefined)
-                            		{
-                            		alert('공백입니다')
-                            		return false;
-                            		}
-                            	
-                            	$.ajax({
-                            		async:true,
-                            		url:'/user/makeAdmin',
-                            		type: 'get',
-	                        		dataType: "json",
-	                        		data: {'target': target},
-	                        		success: function(result)
-	                        		{
-	                        			if(result==1)
-	                        				{
-	                        				alert('해당 유저를 관리자로 변경하였습니다.');
-	                        				}
-	                        			else if(result == 0)
-	                        				alert('유저를 찾을 수 없습니다.');
-	                        		},
-	                        		error: function()
-	                        		{
-	                        			alert('err');
-	                        		}
-                            		
-                            	});
-                            }
-                            
-                            
-                            </script>
-                            
-					</c:if>
-					</sec:authorize>
+
 
 				</body>
 

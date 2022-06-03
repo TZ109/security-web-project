@@ -3,6 +3,12 @@ package com.cos.security1.sendMail;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -62,8 +68,10 @@ public class CustomMailSender {
 	}*/
 	    
 	    public void gmailSend(Article article,String email, String signedPath) {
-	        String user = "teritemp1009@gmail.com"; // 네이버일 경우 네이버 계정, gmail경우 gmail 계정
-	        String password = "fhzvbzbuwygakqyn";   // 패스워드
+	    	
+	    	
+	        String user = "vanenoreply@gmail.com"; // 네이버일 경우 네이버 계정, gmail경우 gmail 계정
+	        String password = "lsybsrjyaosfiroq"; // 패스워드
 	        String content;
 	        
 	        // SMTP 서버 정보를 설정한다.
@@ -171,7 +179,10 @@ public class CustomMailSender {
 	    {
 	    	//Context context = new Context();
 	    	//context.setVariable("text", context);
-	    	
+	    	Calendar cal = Calendar.getInstance();
+	        cal.setTime(new Date());
+	        cal.add(Calendar.DATE, 7);
+	        DateFormat df = new SimpleDateFormat("yyyy년 MM월 dd일 hh시 mm분");
 
 	    	String temp= "<!DOCTYPE html>\n"
 					+ "<html lang=\"ko\">\n"
@@ -189,7 +200,7 @@ public class CustomMailSender {
 					+ "      <tr style=\"height:180px;border: 1px solid #444444;\">\n"
 					+ "        <td colspan=\"2\" style=\"border: 1px solid #444444;\">\n"
 					+ "        <div class=\"mail-image\">\n"
-					+ "          <img style=\"width:49px;height:52px;margin-bottom:10px;\" src=\"https://postfiles.pstatic.net/MjAyMTA1MzBfMTk1/MDAxNjIyMzA5NTk2NzY3.5onXwZcBySinBauScXm-19MtGA5XsUUneN43ZojCCbwg.EU4r4wyg2ScW_Hhjv7G_wiayC93_MJ1Dx5WCnBWiH1Yg.PNG.minkisim/x1.png?type=w580\" alt=\"메일 이미지\">\n"
+					+ "          <img style=\"width:49px;height:52px;margin-bottom:10px;\" src=\"https://vanecompany.synology.me/img/x1.png\" alt=\"메일 이미지\">\n"
 					+ "        </div>\n"
 					+ "        <div class=\"title\" style=\"width:1073px;font: normal normal normal 28px/37px Noto Sans KR;\">\n"
 					+ article.getPapername().substring(article.getPapername().indexOf("_")+1) + "          \n"
@@ -282,17 +293,17 @@ public class CustomMailSender {
 					+ "        </td>\n"
 					+ "        <td style=\"border: 1px solid #444444;\">\n"
 					+ "          <div style=\"font: normal normal normal 16px/21px Noto Sans KR;\">\n"
-					+ "            2021년 6월 29일 22시 34분 51초\n"
+					+ "            "+df.format(cal.getTime())+"\n"
 					+ "          </div>\n"
 					+ "        </td>\n"
 					+ "      </tr>\n"
 					+ "    </table>\n"
 					+ "    </div>\n"
 					+ "    <div style=\"text-align:left;margin-top:40px;margin-left:312px;\">\n"
-					+"<form target=\"_blank\" action='http://localhost:8090/user/DocumentcheckPage' method='post'>"
+					+"<form target=\"_blank\" action='http://baronarin.com/user/DocumentcheckPage' method='post'>"
 					+ "		<input type='hidden' name='title' value='"+article.getPapername()+"'>"
-					+ "		<input type='hidden' name='create_time' value='"+article.getCreateDate()+"'>\""
-					+ "<button><img style=\"width: 451px;height: 88px;opacity: 1;\" src=\"https://postfiles.pstatic.net/MjAyMTA1MzBfMTY5/MDAxNjIyMzA5NTkzMTUz.YPoMHSKHBEJdjIOUn3Yo1znz04iNYUWiuio63rMsyFcg.r-bEcMrY1e1YpUlrLmMWgAH35R2szk_BXgCp9OBjoFwg.PNG.minkisim/%EC%84%9C%EB%AA%85%EB%B2%84%ED%8A%BC.png?type=w580\" alt=\"내용확인 및 서명하기 버튼\" loading=\"lazy\"/>"
+					+ "		<input type='hidden' name='create_time' value='"+article.getCreateDate()+"'>"
+					+ "<button style='border:none;'><img style=\"width: 451px;height: 88px;opacity: 1;\" src=\"https://vanecompany.synology.me/img/%EC%84%9C%EB%AA%85%EB%B2%84%ED%8A%BC.png\" alt=\"내용확인 및 서명하기 버튼\" loading=\"lazy\"/>"
 					+ "</button></form>"
 					+ "    </div>\n"
 					+ "\n"
@@ -327,7 +338,7 @@ public class CustomMailSender {
 					+ "        <td colspan=\"2\" style=\"border: 1px solid #444444;\">\n"
 					+ "        <div class=\"mail-image\">\n"
 					+ "          <img style=\"width:49px;height:52px;margin-bottom:10px;\"\n"
-					+ "          src=\"https://postfiles.pstatic.net/MjAyMTA2MjlfMjk1/MDAxNjI0OTMyNDI3NDg1.ARmiWqay7cmAl5Q5Y_GdMVN6VLB7nXnmqSqlON4PFl4g.eiaT0nq1inno9Pr_kqFMAneTpafwakahcSxh5TzYYeIg.PNG.minkisim/%EC%84%9C%EB%AA%85%EC%99%84%EB%A3%8C.png?type=w580\"\n"
+					+ "          src=\"https://vanecompany.synology.me/img/%EC%84%9C%EB%AA%85%EC%99%84%EB%A3%8C.png\"\n"
 					+ "          alt=\"메일 이미지\">\n"
 					+ "        </div>\n"
 					+ "        <div class=\"title\" style=\"width:1073px;font: normal normal normal 28px/37px Noto Sans KR;\">\n"
@@ -399,7 +410,7 @@ public class CustomMailSender {
 					+ "    <form action='http://baronarin.com/user/Documentcomplete2' method=\"post\" >\n"
 	
 					+ "	<input type=\"hidden\" name=\"serialnum\" value='"+article.getUniquenum()+"'>\n"
-					+ "     <button> <img style=\"width:451px;height:88px;\" src=\"https://postfiles.pstatic.net/MjAyMTA2MjlfNzgg/MDAxNjI0OTMyOTgyNDQy.vluQ7qLU8IyOsGaXWWGNhQJq05Oov5uM393LdzcqIskg.DXVqmC7wVJWaoqHvvG9Z5FOFfvmyAPFueG2JfUq5r0Mg.PNG.minkisim/%EA%B7%B8%EB%A3%B9_967.png?type=w580\"\n"
+					+ "     <button style='border:none;'> <img style=\"width:451px;height:88px;\" src=\"https://vanecompany.synology.me/img/%EA%B7%B8%EB%A3%B9_967.png\"\n"
 					+ "      alt=\"완료문서 확인하기 버튼\"></button>\n"
 					+ "										</form>\n               "
 					+ "    </div>\n"
