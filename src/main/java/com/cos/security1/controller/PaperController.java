@@ -3,7 +3,6 @@ package com.cos.security1.controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
@@ -63,8 +62,9 @@ public class PaperController {
 		
 		//쓰레드 생성해서 파이썬에 전달해줄 텍스트 파일 만들기
 		FileThread thread1 = new FileThread(title, text);
-		
 		thread1.start();
+		
+		System.out.println("쓰레드1 시작 : "+title);
 		try {
 			//파일 만드는 동안 메인 쓰레드 대기
 			thread1.join();
@@ -72,15 +72,26 @@ public class PaperController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("쓰레드 종료 : ");
-		
+			System.out.println("쓰레드1 종료 : ");
+
+			
+			
 		File textfile = new File("python" + File.separator+title+".txt");
-		
-		
+			
+			
 		//파이썬 실행, 요약 텍스트 받아옴
 		text = pythonService.execApachePy(textfile);
 		String firstbody = text.substring(0, text.indexOf('\n'));
 		String mainbody = text.substring(text.indexOf('\n')+1);
+		
+		if(text.contains("\n") && text.contains("You passed along `num_labels=3` with an incompatible id to label map: {'0': 'NEGATIVE', '1': 'POSITIVE'}. The number of labels wil be overwritten to 2."))
+		{
+			text = text.substring(text.indexOf('\n')+1);
+			
+			firstbody = text.substring(0, text.indexOf('\n'));
+			mainbody = text.substring(text.indexOf('\n')+1);
+		}
+		
 		textfile.delete();
 		
 		
@@ -122,8 +133,16 @@ public class PaperController {
 		
 		//파이썬 실행, 요약 텍스트 받아옴
 		String text = pythonService.execApachePy(textfile);
+		
 		String firstbody = text.substring(0, text.indexOf('\n'));
 		String mainbody = text.substring(text.indexOf('\n')+1);
+		if(text.contains("\n") && text.contains("You passed along `num_labels=3` with an incompatible id to label map: {'0': 'NEGATIVE', '1': 'POSITIVE'}. The number of labels wil be overwritten to 2."))
+		{
+			text = text.substring(text.indexOf('\n')+1);
+			
+			firstbody = text.substring(0, text.indexOf('\n'));
+			mainbody = text.substring(text.indexOf('\n')+1);
+		}
 		textfile.delete();
 		
 		

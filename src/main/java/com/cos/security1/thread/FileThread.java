@@ -1,5 +1,7 @@
 package com.cos.security1.thread;
 
+import java.io.File;
+
 import com.cos.security1.service.PaperFileService;
 
 public class FileThread extends Thread{
@@ -7,7 +9,7 @@ public class FileThread extends Thread{
 	String body;
 	
 	public FileThread(String title, String body) {
-		System.out.println("쓰레드 시작 : "+title);
+		
 		this.title = title;
 		this.body = body;
 	}
@@ -21,5 +23,6 @@ public class FileThread extends Thread{
 	public void run()
 	{
 		PaperFileService.makeTextFile(title, body);
+		
 	}
 }
